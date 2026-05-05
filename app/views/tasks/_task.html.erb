@@ -1,0 +1,37 @@
+<div id="<%= dom_id task %>">
+  <div>
+    <strong>Title:</strong>
+    <%= task.title %>
+  </div>
+
+  <div>
+    <strong>Description:</strong>
+    <%= task.description %>
+  </div>
+
+  <div>
+    <strong>Completed:</strong>
+    <%= task.completed %>
+  </div>
+
+  <div>
+    <strong>Priority:</strong>
+    <%= task.priority %>
+  </div>
+
+  <div>
+    <strong>Label:</strong>
+    <%= link_to task.label.name, label_path(task.label) %>
+  </div>
+
+  <div>
+    <strong>Due on:</strong>
+    <%= task.due_on %>
+  </div>
+
+  <div>
+    <strong>Cycle:</strong>
+    <%= task.cycle %>
+  </div>
+
+</div>
