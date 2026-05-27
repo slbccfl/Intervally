@@ -24,7 +24,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_05_200146) do
     t.integer "cycle"
     t.text "description"
     t.date "due_on"
-    t.integer "label_id", null: false
+    t.integer "label_id"
     t.integer "priority", default: 1, null: false
     t.string "title"
     t.datetime "updated_at", null: false

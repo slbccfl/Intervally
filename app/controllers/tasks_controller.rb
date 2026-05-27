@@ -23,14 +23,14 @@ class TasksController < ApplicationController
   def create
     @task = Task.new(task_params)
 
-    respond_to do |format|
-      if @task.save
-        format.html { redirect_to @task, notice: "Task was successfully created." }
-        format.json { render :show, status: :created, location: @task }
-      else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @task.errors, status: :unprocessable_entity }
-      end
+  
+    if @task.save
+      render [
+        turbo_stream.prepend("tasks", @task),
+        turbo_stream.replace("form_user", partial: "form", locals: { task: Task.new })
+      ]
+    else
+      render :new, status: :unprocessable_entity
     end
   end
 
@@ -39,10 +39,10 @@ class TasksController < ApplicationController
     respond_to do |format|
       if @task.update(task_params)
         format.html { redirect_to @task, notice: "Task was successfully updated.", status: :see_other }
-        format.json { render :show, status: :ok, location: @task }
+        # format.json { render :show, status: :ok, location: @task }
       else
         format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @task.errors, status: :unprocessable_entity }
+        # format.json { render json: @task.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -53,7 +53,7 @@ class TasksController < ApplicationController
 
     respond_to do |format|
       format.html { redirect_to tasks_path, notice: "Task was successfully destroyed.", status: :see_other }
-      format.json { head :no_content }
+      # format.json { head :no_content }
     end
   end
 
