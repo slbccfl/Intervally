@@ -21,10 +21,10 @@ class TasksController < ApplicationController
 
   # POST /tasks or /tasks.json
   def create
-    @task = Task.new(task_params)
+    @tasks = Task.new(task_params)
 
   
-    if @task.save
+    if @tasks.save
       render [
         turbo_stream.prepend("tasks", @task),
         turbo_stream.replace("form_user", partial: "form", locals: { task: Task.new })

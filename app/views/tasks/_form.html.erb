@@ -1,30 +1,32 @@
 
-<%= form_with model: task, id: dom_id(task, "form") do |form| %>
-  <% if @task.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@task.errors.count, "error") %> prohibited this task from being saved:</h2>
-      <ul>
-        <% @task.errors.full_messages.each do |message| %>
-          <li><%= message %></li>
-        <% end %>
-      </ul>
-    </div>
-  <% end %>
+<%= form_with(model: task, local: true, class: "flex flex-col gap-6 max-w-lg bg-white p-6 rounded-xl shadow-sm border border-gray-100") do |form| %>
+  
+  <!-- Inline Checkbox Row (Flexbox) -->
+  <div class="flex items-center gap-3">
+    <%= form.check_box :completed, class: "h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" %>
+    <%= form.label :completed, "Mark as Completed", class: "text-sm font-medium text-gray-700 select-none" %>
+  </div>
 
-  <div class="field">
-    <%= form.label :title %><br>
-    <%= form.text_field :title %>
+  <!-- Task Name Input (Vertical Stack) -->
+  <div class="flex flex-col gap-1.5">
+    <%= form.label :name, "Task Name", class: "text-sm font-semibold text-gray-700" %>
+    <%= form.text_field :name, placeholder: "e.g., File Quarterly Taxes", class: "w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm p-2.5 border" %>
   </div>
-  <div class="field">
-    <%= form.label :due_on %><br>
-    <%= form.date_field :due_on %> 
+
+  <!-- Due Date Input (Vertical Stack) -->
+  <div class="flex flex-col gap-1.5">
+    <%= form.label :due_date, "Due Date", class: "text-sm font-semibold text-gray-700" %>
+    <%= form.date_field :due_date, class: "w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm p-2.5 border" %>
   </div>
-  <div class="field">
-    <%= form.label :cycle %><br>
-    <%= form.number_field :cycle %>
+
+  <!-- Recurrence Input (Vertical Stack) -->
+  <div class="flex flex-col gap-1.5">
+    <%= form.label :recurrence_days, "Recurrence Interval (In Days)", class: "text-sm font-semibold text-gray-700" %>
+    <%= form.number_field :recurrence_days, min: 0, placeholder: "e.g., 30 (Leave blank for single run)", class: "w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm p-2.5 border" %>
   </div>
-  <div class="actions">
-    <%= form.submit "Create Task" %>
-  </div>
+
+  <!-- Submit Trigger Button -->
+  <%= form.submit "Save Task", class: "w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 px-4 rounded-lg transition shadow-sm text-sm cursor-pointer mt-2" %>
+
 <% end %>
 
