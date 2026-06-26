@@ -1,30 +1,38 @@
-<!-- Task Row --> 
-<div class="grid grid-cols-[1fr_3fr_2fr_2fr_1fr] gap-x-4 gap-y-3 items-center mb-2">
+<!-- A Task Card --> 
+<div class="h-12 w-60 rounded border border-gray-300">
+  <!-- First row of the card -->
+  <div class="flex h-1/2">
+    <!-- Done Checkbox Cell -->
+    <div class="justify-center w-1/12">
+      <input type="checkbox" <%= 'checked' if task.completed %> disabled class="h-4 w-4 rounded border-gray-500 text-blue-600 focus:ring-blue-500">
+    </div>
 
-  <!-- Done Checkbox Cell -->
-  <div class="flex justify-center border-b border-gray-100 py-3">
-    <input type="checkbox" <%= 'checked' if task.completed %> disabled class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+    <!-- Task Title Cell -->
+    <div class="text-sm font-semibold justify-content w-9/12 <%= task.completed ? 'text-gray-500 line-through font-normal' : 'text-gray-800' %>">
+      <%= button_to edit_task_path(task), method: :get do %>
+        <%= task.title %>
+      <% end %>
+    </div>
+
+
+    <div class="w-2/12 flex justify-center items-center gap-2">
+      <%= button_to task_path(task), method: :delete, data: { turbo_confirm: "Are you sure?" } do %>
+        <i class="fa-solid fa-trash-can"></i>
+      <% end %>
+    </div>
   </div>
 
-  <!-- Task Title Cell -->
-  <div class="text-sm font-semibold border-b border-gray-100 py-3 <%= task.completed ? 'text-gray-400 line-through font-normal' : 'text-gray-800' %>">
-    <%= task.title %>
-  </div>
+  <!-- Second row of the card -->
+  <div class="h-1/2 justify-evenly flex">
+    <!-- Due Date Cell -->
+    <div class="text-xs text-gray-500 border-b border-gray-100">
+      <%= task.due_on&.strftime("%b %d, %Y") || "No date" %>
+    </div>
 
-  <!-- Due Date Cell -->
-  <div class="text-sm text-gray-500 border-b border-gray-100 py-3">
-    <%= task.due_on&.strftime("%b %d, %Y") || "No date" %>
+    <!-- Recurrence Cycle Cell -->
+    <div class="text-xs text-gray-500 italic border-b border-gray-100">
+      <%= task.cycle.present? ? "(every #{task.cycle} days)" : "One-time task" %>
+    </div>
   </div>
-
-  <!-- Recurrence Cycle Cell -->
-  <div class="text-sm text-gray-500 italic border-b border-gray-100 py-3">
-    <%= task.cycle.present? ? "#{task.cycle} days" : "One-time task" %>
-  </div>
-
-  <!-- Actions Cell (Flexbox Container) -->
-  <div class="flex justify-end gap-3 border-b border-gray-100 py-3 text-sm">
-    <%= link_to 'Edit', edit_task_path(task), class: "text-blue-600 hover:text-blue-800 font-medium" %>
-    <%= link_to 'Delete', task, method: :delete, data: { confirm: 'Are you sure?' }, class: "text-red-600 hover:text-red-800 font-medium" %>
-  </div>
-
 </div>
+
