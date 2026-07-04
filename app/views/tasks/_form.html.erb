@@ -1,32 +1,36 @@
 
-<%= form_with(model: task, local: true, class: "flex flex-col gap-6 max-w-lg bg-white p-6 rounded-xl shadow-sm border border-gray-100") do |form| %>
-  
-  <!-- Inline Checkbox Row (Flexbox) -->
-  <div class="flex items-center gap-3">
-    <%= form.check_box :completed, class: "h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" %>
-    <%= form.label :completed, "Mark as Completed", class: "text-sm font-medium text-gray-700 select-none" %>
-  </div>
+<%= form_with(model: task, local: true, class: "flex flex-col gap-6 max-w-lg bg-white p-6 rounded-xl shadow-sm border border-gray-500") do |form| %>
+
+  <h2 class="text-2xl font-bold"><%=action_name.capitalize%> Task</h2>
+
+  <%= render "application/flashes" %>
 
   <!-- Task Name Input (Vertical Stack) -->
   <div class="flex flex-col gap-1.5">
-    <%= form.label :name, "Task Name", class: "text-sm font-semibold text-gray-700" %>
-    <%= form.text_field :name, placeholder: "e.g., File Quarterly Taxes", class: "w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm p-2.5 border" %>
+    <%= form.label :title, "Title", class: "text-sm font-semibold text-gray-700" %>
+    <%= form.text_field :title, placeholder: "e.g., File Quarterly Taxes", class: "w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm p-2.5 border" %>
   </div>
 
   <!-- Due Date Input (Vertical Stack) -->
   <div class="flex flex-col gap-1.5">
-    <%= form.label :due_date, "Due Date", class: "text-sm font-semibold text-gray-700" %>
-    <%= form.date_field :due_date, class: "w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm p-2.5 border" %>
+    <%= form.label :due_on, "Due Date", class: "text-sm font-semibold text-gray-700" %>
+    <%= form.date_field :due_on, class: "w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm p-2.5 border" %>
   </div>
 
   <!-- Recurrence Input (Vertical Stack) -->
   <div class="flex flex-col gap-1.5">
-    <%= form.label :recurrence_days, "Recurrence Interval (In Days)", class: "text-sm font-semibold text-gray-700" %>
-    <%= form.number_field :recurrence_days, min: 0, placeholder: "e.g., 30 (Leave blank for single run)", class: "w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm p-2.5 border" %>
+    <%= form.label :cycle, "Recurrence Cycle (In Days)", class: "text-sm font-semibold text-gray-700" %>
+    <%= form.number_field :cycle, min: 0, placeholder: "e.g., 30 (Leave blank for single run)", class: "w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm p-2.5 border" %>
   </div>
 
-  <!-- Submit Trigger Button -->
-  <%= form.submit "Save Task", class: "w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 px-4 rounded-lg transition shadow-sm text-sm cursor-pointer mt-2" %>
+  <!-- Cancel and Submit Buttons -->
+  <div class="flex justify-evenly">
+    <%= button_tag "Cancel", type: :button, data: { action: "click->modal#hide" }, class: "px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2" %>
+
+    <%= form.submit class: "px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2" %>
+  </div>
 
 <% end %>
+
+
 

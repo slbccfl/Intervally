@@ -23,6 +23,17 @@ class TasksControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to task_url(Task.last)
   end
 
+  test "should create task with turbo stream and render a flash notice" do
+    assert_difference("Task.count") do
+      post tasks_url,
+        params: { task: { cycle: @task.cycle, description: @task.description, due_on: @task.due_on, title: @task.title } },
+        headers: { "Accept" => "text/vnd.turbo-stream.html" }
+    end
+
+    assert_response :success
+    assert_includes @response.body, "Task created."
+  end
+
   test "should show task" do
     get task_url(@task)
     assert_response :success

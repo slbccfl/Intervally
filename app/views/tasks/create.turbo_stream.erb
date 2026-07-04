@@ -1,0 +1,7 @@
+<%= turbo_stream.update "modal_flash" do %>
+  <% flash.each do |type, message| %>
+    <div class="alert alert-<%= type %>">
+      <%= message %>
+    </div>
+  <% end %>
+<% end %>

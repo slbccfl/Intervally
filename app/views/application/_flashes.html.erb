@@ -1,0 +1,7 @@
+<div id="flash-container" class="fixed bottom-5 left-5 z-50 flex flex-col gap-3 pointer-events-none">
+  <% flash.each do |type, messages| %>
+    <% Array(messages).each do |message| %>
+      <%= render "application/flash", type:, message: %>
+    <% end %>
+  <% end %>
+</div>

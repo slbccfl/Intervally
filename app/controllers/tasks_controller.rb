@@ -3,6 +3,8 @@ class TasksController < ApplicationController
 
   # GET /tasks or /tasks.json
   def index
+    # flash.alert = "Do not try to steal a majestic penguin!"
+    # flash.notice = "You see a majestic penguin."
     @tasks = Task.all
   end
 
@@ -21,29 +23,39 @@ class TasksController < ApplicationController
 
   # POST /tasks or /tasks.json
   def create
-    @tasks = Task.new(task_params)
+    @task = Task.new(task_params)
 
-  
-    if @tasks.save
-      render [
-        turbo_stream.prepend("tasks", @task),
-        turbo_stream.replace("form_user", partial: "form", locals: { task: Task.new })
-      ]
-    else
-      render :new, status: :unprocessable_entity
+    respond_to do |format|
+      if @task.save
+        flash[:notice] = "Task created."
+        format.turbo_stream do
+          render turbo_stream: [
+            turbo_stream.append("task-list", @task),
+            turbo_stream.update("flash-container") { render_to_string(partial: "application/flashes") }
+          ]
+        end
+        format.html { redirect_to @task, notice: "Task created." }
+      else
+        flash[:alert] = "Task could not be saved."
+        format.html { render :new, status: :unprocessable_entity }
+      end
     end
   end
 
   # PATCH/PUT /tasks/1 or /tasks/1.json
   def update
-    respond_to do |format|
       if @task.update(task_params)
-        format.html { redirect_to @task, notice: "Task was successfully updated.", status: :see_other }
-        # format.json { render :show, status: :ok, location: @task }
-      else
-        format.html { render :edit, status: :unprocessable_entity }
-        # format.json { render json: @task.errors, status: :unprocessable_entity }
+        respond_to do |format| 
+        flash[:notice] = "Task updated."
+        format.turbo_stream do
+          render turbo_stream: [
+            turbo_stream.update("flash-container") { render_to_string(partial: "application/flashes") }
+          ]
+        end 
       end
+    else
+      flash[:alert] = "Task could not be updated."
+      render :edit, status: :unprocessable_entity 
     end
   end
 
@@ -52,8 +64,13 @@ class TasksController < ApplicationController
     @task.destroy!
 
     respond_to do |format|
-      format.html { redirect_to tasks_path, notice: "Task was successfully destroyed.", status: :see_other }
-      # format.json { head :no_content }
+      flash[:notice] = "Task deleted."
+      format.turbo_stream do
+        render turbo_stream: [
+          turbo_stream.remove(@task),
+          turbo_stream.update("flash-container") { render_to_string(partial: "application/flashes") }
+        ]
+      end
     end
   end
 

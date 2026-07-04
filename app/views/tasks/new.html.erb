@@ -1,13 +1,14 @@
-<%= turbo_frame_tag "modal" do %>
-  <div class="modal">
-    <h1 class="text-2xl font-bold mb-4">New Task</h1>
-    <%= render "form", task: @task %>
-    <div>
-      <%= link_to "Cancel", "#", class: "cancel-btn", data: {
-        controller: "modals",
-        action: "click->modal#close"
-      } %>
+<turbo-frame id="modal">
+  <div data-controller="modal" data-action="turbo:submit-end->modal#hideOnSubmit keydown.esc->modal#hide" role="dialog" tabindex="-1" class="fixed inset-0 z-30 flex items-center justify-center w-full h-screen p-2">
+  <%# Modal wrapper %>
+    <div role="dialog" tabindex="-1" class="fixed inset-0 z-30 flex items-center justify-center w-full h-screen p-2">
+      <%# Backdrop that closes the modal on click - The click is not working %>
+      <%= button_to nil, nil, type: :button, method: :get, form: { data: {action: "modal#hide"} }, class: "fixed inset-0 block w-full h-screen cursor-default bg-gray-900/30" %>
+      <div class="relative z-20 w-full max-w-2x1 max-h-hscreen overflow-y-auto gb-white shadow-lg rounded-lg p-6">
+        <%# Modal content %>
+          <%= render "form", task: @task, locals: { current_action: action_name } %>
+      </div>
     </div>
   </div>
-<% end %>
+</turbo-frame>
 

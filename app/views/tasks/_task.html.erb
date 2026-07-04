@@ -1,5 +1,5 @@
 <!-- A Task Card --> 
-<div class="h-12 w-60 rounded border border-gray-300">
+<div id="<%= dom_id task %>" class="h-12 w-60 rounded border border-gray-300">
   <!-- First row of the card -->
   <div class="flex h-1/2">
     <!-- Done Checkbox Cell -->
@@ -9,7 +9,7 @@
 
     <!-- Task Title Cell -->
     <div class="text-sm font-semibold justify-content w-9/12 <%= task.completed ? 'text-gray-500 line-through font-normal' : 'text-gray-800' %>">
-      <%= button_to edit_task_path(task), method: :get do %>
+      <%= button_to edit_task_path(task), method: :get, data: {turbo_frame: "modal"} do %>
         <%= task.title %>
       <% end %>
     </div>

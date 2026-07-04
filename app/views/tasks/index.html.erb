@@ -5,22 +5,14 @@
       Tasks
     </h1>
   </div>
-  <!-- CSS Grid for Task List -->
-  <!-- Task Table Headers -->
-  <div class="grid grid-cols-[1fr_3fr_2fr_2fr_1fr] gap-x-4 gap-y-3 items-center mb-2">
-    <!-- Table Grid Headers -->
-    <div class="text-xs font-bold uppercase tracking-wider text-gray-800 border-b pb-2 text-center">Done</div>
-    <div class="text-xs font-bold uppercase tracking-wider text-gray-800 border-b pb-2">Task Name</div>
-    <div class="text-xs font-bold uppercase tracking-wider text-gray-800 border-b pb-2">Due Date</div>
-    <div class="text-xs font-bold uppercase tracking-wider text-gray-800 border-b pb-2">Repeats Every</div>
-    <div class="text-xs font-bold uppercase tracking-wider text-gray-800 border pb-2 text-right">Actions</div>
-  </div>
-
-  <!-- Task List -->
-  <div class="divide-y divide-gray-100">
-    <% @tasks.each do |task| %>
-      <%= render task %>
-    <% end %>
+  <!-- Task Cards in a Vertical Flexbox -->
+  <div class="flex flex-col gap-4">
+    <!-- Task List -->
+    <div id="task-list" class="divide-y divide-gray-100 w-sm">
+      <% @tasks.each do |task| %>
+        <%= render task %>
+      <% end %>
+    </div>
   </div>
   <%= link_to "New Task", new_task_path, data: {turbo_frame: "modal"} %>
 </div>
