@@ -1,13 +1,19 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  title: MyString
-  description: MyText
+  title: Task One
+  description: Task One Description
   due_on: 2026-04-29
   cycle: 1
 
 two:
-  title: MyString
-  description: MyText
+  title: Task Two
+  description: Task Two Description
   due_on: 2026-04-29
-  cycle: 1
+  cycle: 2  
+
+three:
+  title: Task Three
+  description: Task Three Description
+  due_on: 2026-04-29
+  cycle: 3

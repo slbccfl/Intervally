@@ -24,7 +24,9 @@ export default class extends Controller {
     }, 300)
   }
 
-  hide() {
+  hide(event) {
+    event?.preventDefault();
+    event?.stopPropagation();
     this.element.remove();
   }
 }

@@ -8,4 +8,16 @@ module ApplicationHelper
         end
         html.join.html_safe
     end
+    
+  def bg_color_for_priority(priority)
+    Rails.logger.debug("--- From tasks_helper: #{priority} ---")
+    case priority
+    when 1 then "bg-red-500"
+    when 2 then "bg-orange-500"
+    when 3 then "bg-yellow-500"
+    when 4 then "bg-blue-500"
+    when 5 then "bg-green-500"
+    else "bg-gray-500"
+    end
+  end
 end

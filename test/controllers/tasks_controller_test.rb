@@ -15,6 +15,12 @@ class TasksControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "flash messages should allow pointer interactions" do
+    get tasks_url
+    assert_response :success
+    assert_includes @response.body, "pointer-events-auto"
+  end
+
   test "should create task" do
     assert_difference("Task.count") do
       post tasks_url, params: { task: { cycle: @task.cycle, description: @task.description, due_on: @task.due_on, title: @task.title } }

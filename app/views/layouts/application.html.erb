@@ -29,6 +29,7 @@
     <%= render "application/flashes" %>
     
     <%= yield %>
-    # <%= turbo_frame_tag "modal" %>
+    <%= turbo_frame_tag "modal" %>
+    <%= turbo_frame_tag "flash-container" %>
   </body>
 </html>

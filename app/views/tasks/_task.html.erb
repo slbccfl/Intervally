@@ -1,10 +1,10 @@
 <!-- A Task Card --> 
-<div id="<%= dom_id task %>" class="h-12 w-60 rounded border border-gray-300">
+<div id="<%= dom_id task %>" class="h-12 w-60 rounded border border-gray-300 <%= bg_color_for_priority(task.priority) %>">
   <!-- First row of the card -->
   <div class="flex h-1/2">
     <!-- Done Checkbox Cell -->
     <div class="justify-center w-1/12">
-      <input type="checkbox" <%= 'checked' if task.completed %> disabled class="h-4 w-4 rounded border-gray-500 text-blue-600 focus:ring-blue-500">
+      <input type="checkbox" <%= 'checked' if task.completed %> disabled class="h-4 w-4 rounded border-gray-900 text-blue-600 focus:ring-blue-500">
     </div>
 
     <!-- Task Title Cell -->
@@ -23,14 +23,14 @@
   </div>
 
   <!-- Second row of the card -->
-  <div class="h-1/2 justify-evenly flex">
+  <div class="text-xs text-gray-800 h-1/2 justify-evenly flex">
     <!-- Due Date Cell -->
-    <div class="text-xs text-gray-500 border-b border-gray-100">
+    <div>
       <%= task.due_on&.strftime("%b %d, %Y") || "No date" %>
     </div>
 
     <!-- Recurrence Cycle Cell -->
-    <div class="text-xs text-gray-500 italic border-b border-gray-100">
+    <div class="italic">
       <%= task.cycle.present? ? "(every #{task.cycle} days)" : "One-time task" %>
     </div>
   </div>

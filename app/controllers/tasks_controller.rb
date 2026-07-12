@@ -3,9 +3,9 @@ class TasksController < ApplicationController
 
   # GET /tasks or /tasks.json
   def index
-    # flash.alert = "Do not try to steal a majestic penguin!"
+    flash.alert = "Do not try to steal a majestic penguin!"
     # flash.notice = "You see a majestic penguin."
-    @tasks = Task.all
+    @tasks = Task.order(priority: :asc, due_on: :asc)
   end
 
   # GET /tasks/1 or /tasks/1.json
@@ -49,6 +49,7 @@ class TasksController < ApplicationController
         flash[:notice] = "Task updated."
         format.turbo_stream do
           render turbo_stream: [
+            turbo_stream.replace("task_#{@task.id}", partial: "tasks/task", locals: { task: @task }),
             turbo_stream.update("flash-container") { render_to_string(partial: "application/flashes") }
           ]
         end 
