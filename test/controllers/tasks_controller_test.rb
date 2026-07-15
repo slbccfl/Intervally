@@ -15,6 +15,31 @@ class TasksControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "index orders tasks by due ratio and puts null-cycle tasks last" do
+    Task.delete_all
+
+    earlier_task = Task.create!(title: "Earlier", due_on: Date.current + 2.days, cycle: 2, priority: 1)
+    later_task = Task.create!(title: "Later", due_on: Date.current + 5.days, cycle: 5, priority: 1)
+    no_cycle_task = Task.create!(title: "No Cycle", due_on: Date.current + 10.days, cycle: nil, priority: 1)
+
+    get tasks_url
+
+    assert_response :success
+    assert_equal [earlier_task.id, later_task.id, no_cycle_task.id], assigns(:tasks).pluck(:id)
+  end
+
+  test "index prioritizes tasks by priority before due ratio" do
+    Task.delete_all
+
+    lower_priority_task = Task.create!(title: "Lower priority", due_on: Date.current + 5.days, cycle: 2, priority: 1)
+    higher_priority_task = Task.create!(title: "Higher priority", due_on: Date.current + 1.day, cycle: 2, priority: 2)
+
+    get tasks_url
+
+    assert_response :success
+    assert_equal [lower_priority_task.id, higher_priority_task.id], assigns(:tasks).pluck(:id)
+  end
+
   test "flash messages should allow pointer interactions" do
     get tasks_url
     assert_response :success

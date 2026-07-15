@@ -10,7 +10,6 @@ module ApplicationHelper
     end
     
   def bg_color_for_priority(priority)
-    Rails.logger.debug("--- From tasks_helper: #{priority} ---")
     case priority
     when 1 then "bg-red-500"
     when 2 then "bg-orange-500"

@@ -1,7 +1,7 @@
 <!-- A Task Card --> 
-<div id="<%= dom_id task %>" class="h-12 w-60 rounded border border-gray-300 <%= bg_color_for_priority(task.priority) %>">
+<div id="<%= dom_id task %>" class="h-14 w-60 rounded border border-gray-300 <%= bg_color_for_priority(task.priority) %>">
   <!-- First row of the card -->
-  <div class="flex h-1/2">
+  <div class="flex h-4/10">
     <!-- Done Checkbox Cell -->
     <div class="justify-center w-1/12">
       <input type="checkbox" <%= 'checked' if task.completed %> disabled class="h-4 w-4 rounded border-gray-900 text-blue-600 focus:ring-blue-500">
@@ -23,15 +23,27 @@
   </div>
 
   <!-- Second row of the card -->
-  <div class="text-xs text-gray-800 h-1/2 justify-evenly flex">
+  <div class="text-xs text-gray-800 h-3/10 justify-evenly flex">
     <!-- Due Date Cell -->
     <div>
       <%= task.due_on&.strftime("%b %d, %Y") || "No date" %>
     </div>
+    <!-- Due in Days -->
+    <div>
+      <%= task.due_on ? "(Due in #{(task.due_on - Date.today).to_i} days)" : nil %>
+    </div>
 
+  </div>
+  <!-- Third row of the card -->
+  <div class="text-xs text-gray-800 h-3/10 justify-evenly flex">
     <!-- Recurrence Cycle Cell -->
     <div class="italic">
-      <%= task.cycle.present? ? "(every #{task.cycle} days)" : "One-time task" %>
+      <%= task.cycle.present? ? "Due every #{task.cycle} days" : "One-time task" %>
+    </div>
+    <!-- Due Ratio -->
+    <% due_ratio = task.cycle ? ((task.due_on - Date.today).to_f / task.cycle.to_i).round(2) : nil %>
+    <div class="italic">
+      <%= due_ratio ? "Due Ratio: #{number_with_precision(due_ratio, precision: 2)}" : "" %>
     </div>
   </div>
 </div>

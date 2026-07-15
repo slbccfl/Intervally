@@ -3,9 +3,22 @@ class TasksController < ApplicationController
 
   # GET /tasks or /tasks.json
   def index
-    flash.alert = "Do not try to steal a majestic penguin!"
+    # flash.alert = "Do not try to steal a majestic penguin!"
     # flash.notice = "You see a majestic penguin."
-    @tasks = Task.order(priority: :asc, due_on: :asc)
+    # @tasks = Task.order(priority: :asc, due_on: :asc)
+    @tasks = Task.all.sort_by do |task|
+      days_until_due = (task.due_on - Date.current).to_i
+      cycle_value = task.cycle.present? && task.cycle.to_i != 0 ? task.cycle.to_f : Float::INFINITY
+      due_ratio = (days_until_due ? days_until_due : 0).to_f / cycle_value
+
+      [task.priority.to_i, task.cycle.present? ? 0 : 1, due_ratio]
+    end
+
+    @tasks.each do |task|
+      days_until_due = (task.due_on - Date.current).to_i
+      due_ratio = (days_until_due ? days_until_due : 0).to_f / (task.cycle || 1).to_f
+      Rails.logger.debug "Task id: #{task.id}, due_on: #{task.due_on}, cycle: #{task.cycle}, priority: #{task.priority}, days_until_due: #{days_until_due}, due_ratio: #{due_ratio}"
+    end
   end
 
   # GET /tasks/1 or /tasks/1.json
