@@ -4,7 +4,10 @@
   <div class="flex h-4/10">
     <!-- Done Checkbox Cell -->
     <div class="justify-center w-1/12">
-      <input type="checkbox" <%= 'checked' if task.completed %> disabled class="h-4 w-4 rounded border-gray-900 text-blue-600 focus:ring-blue-500">
+      <%= form_with url: toggle_status_task_path(task), method: :patch, class: "inline-flex", data: { turbo: true } do %>
+        <%= hidden_field_tag :completed, "false" %>
+        <%= check_box_tag :completed, "true", task.completed, class: "h-4 w-4 rounded border-gray-900 text-blue-600 focus:ring-blue-500", onchange: "this.form.requestSubmit()" %>
+      <% end %>
     </div>
 
     <!-- Task Title Cell -->

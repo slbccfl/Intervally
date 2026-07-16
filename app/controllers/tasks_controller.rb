@@ -1,5 +1,5 @@
 class TasksController < ApplicationController
-  before_action :set_task, only: %i[ show edit update destroy ]
+  before_action :set_task, only: %i[ show edit update destroy toggle_status ]
 
   # GET /tasks or /tasks.json
   def index
@@ -11,7 +11,7 @@ class TasksController < ApplicationController
       cycle_value = task.cycle.present? && task.cycle.to_i != 0 ? task.cycle.to_f : Float::INFINITY
       due_ratio = (days_until_due ? days_until_due : 0).to_f / cycle_value
 
-      [task.priority.to_i, task.cycle.present? ? 0 : 1, due_ratio]
+      [task.completed ? 1 : 0, task.priority.to_i, due_ratio]
     end
 
     @tasks.each do |task|
@@ -57,19 +57,40 @@ class TasksController < ApplicationController
 
   # PATCH/PUT /tasks/1 or /tasks/1.json
   def update
-      if @task.update(task_params)
-        respond_to do |format| 
+    if @task.update(task_params)
+      respond_to do |format|
         flash[:notice] = "Task updated."
         format.turbo_stream do
           render turbo_stream: [
             turbo_stream.replace("task_#{@task.id}", partial: "tasks/task", locals: { task: @task }),
             turbo_stream.update("flash-container") { render_to_string(partial: "application/flashes") }
           ]
-        end 
+        end
+        format.html { redirect_to @task, notice: "Task updated." }
       end
     else
       flash[:alert] = "Task could not be updated."
-      render :edit, status: :unprocessable_entity 
+      render :edit, status: :unprocessable_entity
+    end
+  end
+
+  def toggle_status
+    completed = params[:completed] == "true"
+
+    if @task.update(completed: completed)
+      respond_to do |format|
+        flash[:notice] = completed ? "Task completed." : "Task marked incomplete."
+        format.turbo_stream do
+          render turbo_stream: [
+            turbo_stream.replace("task_#{@task.id}", partial: "tasks/task", locals: { task: @task }),
+            turbo_stream.update("flash-container") { render_to_string(partial: "application/flashes") }
+          ]
+        end
+        format.html { redirect_to tasks_url, notice: completed ? "Task completed." : "Task marked incomplete." }
+      end
+    else
+      flash[:alert] = "Task could not be updated."
+      redirect_to tasks_url, alert: "Task could not be updated."
     end
   end
 

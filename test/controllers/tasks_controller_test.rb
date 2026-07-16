@@ -40,6 +40,18 @@ class TasksControllerTest < ActionDispatch::IntegrationTest
     assert_equal [lower_priority_task.id, higher_priority_task.id], assigns(:tasks).pluck(:id)
   end
 
+  test "index puts completed tasks at the end" do
+    Task.delete_all
+
+    incomplete_task = Task.create!(title: "Incomplete", due_on: Date.current + 1.day, cycle: 2, priority: 1)
+    completed_task = Task.create!(title: "Completed", due_on: Date.current, cycle: 2, priority: 1, completed: true)
+
+    get tasks_url
+
+    assert_response :success
+    assert_equal [incomplete_task.id, completed_task.id], assigns(:tasks).pluck(:id)
+  end
+
   test "flash messages should allow pointer interactions" do
     get tasks_url
     assert_response :success
@@ -80,11 +92,12 @@ class TasksControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to task_url(@task)
   end
 
-  test "should destroy task" do
-    assert_difference("Task.count", -1) do
-      delete task_url(@task)
-    end
+  test "should toggle task status to completed" do
+    @task.update!(completed: false)
+
+    patch toggle_status_task_url(@task)
 
     assert_redirected_to tasks_url
+    assert @task.reload.completed
   end
 end
