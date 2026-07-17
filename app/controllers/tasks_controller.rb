@@ -3,22 +3,7 @@ class TasksController < ApplicationController
 
   # GET /tasks or /tasks.json
   def index
-    # flash.alert = "Do not try to steal a majestic penguin!"
-    # flash.notice = "You see a majestic penguin."
-    # @tasks = Task.order(priority: :asc, due_on: :asc)
-    @tasks = Task.all.sort_by do |task|
-      days_until_due = (task.due_on - Date.current).to_i
-      cycle_value = task.cycle.present? && task.cycle.to_i != 0 ? task.cycle.to_f : Float::INFINITY
-      due_ratio = (days_until_due ? days_until_due : 0).to_f / cycle_value
-
-      [task.completed ? 1 : 0, task.priority.to_i, due_ratio]
-    end
-
-    @tasks.each do |task|
-      days_until_due = (task.due_on - Date.current).to_i
-      due_ratio = (days_until_due ? days_until_due : 0).to_f / (task.cycle || 1).to_f
-      Rails.logger.debug "Task id: #{task.id}, due_on: #{task.due_on}, cycle: #{task.cycle}, priority: #{task.priority}, days_until_due: #{days_until_due}, due_ratio: #{due_ratio}"
-    end
+    @tasks = Task.all.sort_by { |task| task_sort_key(task) }
   end
 
   # GET /tasks/1 or /tasks/1.json
@@ -75,18 +60,30 @@ class TasksController < ApplicationController
   end
 
   def toggle_status
-    completed = params[:completed] == "true"
+    completed = params.key?(:completed) ? params[:completed] == "true" : true
+    attributes = { completed: completed }
 
-    if @task.update(completed: completed)
+    if completed && @task.cycle.present? && @task.cycle.to_i.positive?
+      attributes = {
+        completed: false,
+        due_on: Date.current + @task.cycle.to_i.days
+      }
+    end
+
+    if @task.update(attributes)
       respond_to do |format|
-        flash[:notice] = completed ? "Task completed." : "Task marked incomplete."
+        flash[:notice] = if completed && @task.cycle.present? && @task.cycle.to_i.positive?
+          "Task rescheduled."
+        else
+          completed ? "Task completed." : "Task marked incomplete."
+        end
         format.turbo_stream do
           render turbo_stream: [
             turbo_stream.replace("task_#{@task.id}", partial: "tasks/task", locals: { task: @task }),
             turbo_stream.update("flash-container") { render_to_string(partial: "application/flashes") }
           ]
         end
-        format.html { redirect_to tasks_url, notice: completed ? "Task completed." : "Task marked incomplete." }
+        format.html { redirect_to tasks_url, notice: flash[:notice] }
       end
     else
       flash[:alert] = "Task could not be updated."
@@ -113,6 +110,14 @@ class TasksController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_task
       @task = Task.find(params.expect(:id))
+    end
+
+    def task_sort_key(task)
+      days_until_due = (task.due_on - Date.current).to_i
+      cycle_value = task.cycle.present? && task.cycle.to_i.positive? ? task.cycle.to_f : Float::INFINITY
+      due_ratio = cycle_value == Float::INFINITY ? Float::INFINITY : ((days_until_due ? days_until_due : 0).to_f / cycle_value)
+
+      [task.completed ? 1 : 0, task.priority.to_i, due_ratio, task.due_on]
     end
 
     # Only allow a list of trusted parameters through.

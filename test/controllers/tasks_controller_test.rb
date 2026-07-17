@@ -92,12 +92,35 @@ class TasksControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to task_url(@task)
   end
 
+  test "should reschedule recurring task instead of marking it complete" do
+    @task.update!(completed: false, cycle: 5, due_on: Date.current)
+
+    patch toggle_status_task_url(@task), params: { completed: "true" }
+
+    assert_redirected_to tasks_url
+    assert_not @task.reload.completed
+    assert_equal Date.current + 5.days, @task.reload.due_on
+  end
+
   test "should toggle task status to completed" do
-    @task.update!(completed: false)
+    @task.update!(completed: false, cycle: nil)
 
     patch toggle_status_task_url(@task)
 
     assert_redirected_to tasks_url
     assert @task.reload.completed
+  end
+
+  test "sorts tasks with completed last, then priority, then due ratio" do
+    Task.delete_all
+
+    lower_priority_task = Task.create!(title: "Lower priority", due_on: Date.current + 5.days, cycle: 2, priority: 1)
+    higher_priority_task = Task.create!(title: "Higher priority", due_on: Date.current + 1.day, cycle: 2, priority: 2)
+    completed_task = Task.create!(title: "Completed", due_on: Date.current, cycle: 2, priority: 1, completed: true)
+
+    controller = TasksController.new
+    sorted_ids = [lower_priority_task, higher_priority_task, completed_task].sort_by { |task| controller.send(:task_sort_key, task) }.pluck(:id)
+
+    assert_equal [lower_priority_task.id, higher_priority_task.id, completed_task.id], sorted_ids
   end
 end
