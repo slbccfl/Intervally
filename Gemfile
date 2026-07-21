@@ -69,3 +69,4 @@ end
 gem "tailwindcss-rails", "~> 4.4"
 gem 'font-awesome-sass', '~> 6.7'
 gem 'sassc-rails'
+gem "acts_as_list"

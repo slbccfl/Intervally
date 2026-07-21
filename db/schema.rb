@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_05_200146) do
+ActiveRecord::Schema[8.1].define(version: 2026_07_19_235238) do
   create_table "labels", force: :cascade do |t|
     t.boolean "active", default: true, null: false
     t.datetime "created_at", null: false
@@ -28,8 +28,19 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_05_200146) do
     t.integer "priority", default: 1, null: false
     t.string "title"
     t.datetime "updated_at", null: false
+    t.integer "view_id", null: false
     t.index ["label_id"], name: "index_tasks_on_label_id"
+    t.index ["view_id"], name: "index_tasks_on_view_id"
+  end
+
+  create_table "views", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "name", null: false
+    t.integer "position", default: 1, null: false
+    t.datetime "updated_at", null: false
+    t.index ["position"], name: "index_views_on_position"
   end
 
   add_foreign_key "tasks", "labels"
+  add_foreign_key "tasks", "views"
 end

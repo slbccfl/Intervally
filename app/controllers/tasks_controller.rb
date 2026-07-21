@@ -43,6 +43,7 @@ class TasksController < ApplicationController
   # PATCH/PUT /tasks/1 or /tasks/1.json
   def update
     if @task.update(task_params)
+      Logger.info("Task updated: #{@task.prettify}")
       respond_to do |format|
         flash[:notice] = "Task updated."
         format.turbo_stream do
