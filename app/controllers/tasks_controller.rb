@@ -3,7 +3,7 @@ class TasksController < ApplicationController
 
   # GET /tasks or /tasks.json
   def index
-    @tasks = Task.all.sort_by { |task| task_sort_key(task) }
+    @tasks = Task.sorted_by_urgency
   end
 
   # GET /tasks/1 or /tasks/1.json
@@ -21,14 +21,14 @@ class TasksController < ApplicationController
 
   # POST /tasks or /tasks.json
   def create
-    @task = Task.new(task_params)
+    @task = Task.new(task_params.merge(view_id: default_view_id))
 
     respond_to do |format|
       if @task.save
         flash[:notice] = "Task created."
         format.turbo_stream do
           render turbo_stream: [
-            turbo_stream.append("task-list", @task),
+            turbo_stream.replace("task-list", partial: "tasks/task_list", locals: { tasks: Task.sorted_by_urgency }),
             turbo_stream.update("flash-container") { render_to_string(partial: "application/flashes") }
           ]
         end
@@ -43,12 +43,11 @@ class TasksController < ApplicationController
   # PATCH/PUT /tasks/1 or /tasks/1.json
   def update
     if @task.update(task_params)
-      Logger.info("Task updated: #{@task.prettify}")
       respond_to do |format|
         flash[:notice] = "Task updated."
         format.turbo_stream do
           render turbo_stream: [
-            turbo_stream.replace("task_#{@task.id}", partial: "tasks/task", locals: { task: @task }),
+            turbo_stream.replace("task-list", partial: "tasks/task_list", locals: { tasks: Task.sorted_by_urgency }),
             turbo_stream.update("flash-container") { render_to_string(partial: "application/flashes") }
           ]
         end
@@ -80,7 +79,7 @@ class TasksController < ApplicationController
         end
         format.turbo_stream do
           render turbo_stream: [
-            turbo_stream.replace("task_#{@task.id}", partial: "tasks/task", locals: { task: @task }),
+            turbo_stream.replace("task-list", partial: "tasks/task_list", locals: { tasks: Task.sorted_by_urgency }),
             turbo_stream.update("flash-container") { render_to_string(partial: "application/flashes") }
           ]
         end
@@ -113,12 +112,16 @@ class TasksController < ApplicationController
       @task = Task.find(params.expect(:id))
     end
 
-    def task_sort_key(task)
-      days_until_due = (task.due_on - Date.current).to_i
-      cycle_value = task.cycle.present? && task.cycle.to_i.positive? ? task.cycle.to_f : Float::INFINITY
-      due_ratio = cycle_value == Float::INFINITY ? Float::INFINITY : ((days_until_due ? days_until_due : 0).to_f / cycle_value)
+    # def task_sort_key(task)
+    #   days_until_due = (task.due_on - Date.current).to_i
+    #   cycle_value = task.cycle.present? && task.cycle.to_i.positive? ? task.cycle.to_f : Float::INFINITY
+    #   due_ratio = cycle_value == Float::INFINITY ? Float::INFINITY : ((days_until_due ? days_until_due : 0).to_f / cycle_value)
 
-      [task.completed ? 1 : 0, task.priority.to_i, due_ratio, task.due_on]
+    #   [task.completed ? 1 : 0, task.priority.to_i, due_ratio, task.due_on]
+    # end
+
+    def default_view_id
+      View.find_by!(name: "Unassigned").id
     end
 
     # Only allow a list of trusted parameters through.

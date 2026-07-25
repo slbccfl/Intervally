@@ -5,4 +5,16 @@ class Task < ApplicationRecord
     # Validations that title and due date are present when creating or updating a task
     validates :title, presence: true
     validates :due_on, presence: true
+
+    def self.sorted_by_urgency
+        all.sort_by(&:urgency_sort_key)
+    end
+
+    def urgency_sort_key
+        days_until_due = due_on ? (due_on - Date.current).to_i : 0
+        cycle_value = cycle.present? && cycle.to_i.positive? ? cycle.to_f : Float::INFINITY
+        due_ratio = cycle_value == Float::INFINITY ? Float::INFINITY : (days_until_due / cycle_value)
+
+        [completed? ? 1 : 0, priority.to_i, due_ratio, due_on]
+    end
 end
