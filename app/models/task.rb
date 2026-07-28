@@ -5,6 +5,8 @@ class Task < ApplicationRecord
     # Validations that title and due date are present when creating or updating a task
     validates :title, presence: true
     validates :due_on, presence: true
+    validates :priority, presence: true, inclusion: { in: 1..5 }
+    validates :cycle, numericality: { only_integer: true, greater_than_or_equal_to: 0 }, allow_nil: true
 
     def self.sorted_by_urgency
         all.sort_by(&:urgency_sort_key)

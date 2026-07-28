@@ -53,7 +53,9 @@ class TasksControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "flash messages should allow pointer interactions" do
-    get tasks_url
+    post tasks_url, params: { task: { title: "Test", due_on: Date.today } }
+    follow_redirect!
+
     assert_response :success
     assert_includes @response.body, "pointer-events-auto"
   end
