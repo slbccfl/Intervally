@@ -121,7 +121,7 @@ class TasksController < ApplicationController
     # end
 
     def default_view_id
-      View.find_by!(name: "Unassigned").id
+      View.find_by!(name: View::UNASSIGNED_NAME).id
     end
 
     # Only allow a list of trusted parameters through.

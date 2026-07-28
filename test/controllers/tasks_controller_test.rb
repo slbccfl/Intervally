@@ -18,9 +18,9 @@ class TasksControllerTest < ActionDispatch::IntegrationTest
   test "index orders tasks by due ratio and puts null-cycle tasks last" do
     Task.delete_all
 
-    earlier_task = Task.create!(title: "Earlier", due_on: Date.current + 2.days, cycle: 2, priority: 1)
-    later_task = Task.create!(title: "Later", due_on: Date.current + 5.days, cycle: 5, priority: 1)
-    no_cycle_task = Task.create!(title: "No Cycle", due_on: Date.current + 10.days, cycle: nil, priority: 1)
+    earlier_task = Task.create!(title: "Earlier", due_on: Date.current + 2.days, cycle: 2, priority: 1, view: views(:unassigned))
+    later_task = Task.create!(title: "Later", due_on: Date.current + 5.days, cycle: 5, priority: 1, view: views(:unassigned))
+    no_cycle_task = Task.create!(title: "No Cycle", due_on: Date.current + 10.days, cycle: nil, priority: 1, view: views(:unassigned))
 
     get tasks_url
 
@@ -31,8 +31,8 @@ class TasksControllerTest < ActionDispatch::IntegrationTest
   test "index prioritizes tasks by priority before due ratio" do
     Task.delete_all
 
-    lower_priority_task = Task.create!(title: "Lower priority", due_on: Date.current + 5.days, cycle: 2, priority: 1)
-    higher_priority_task = Task.create!(title: "Higher priority", due_on: Date.current + 1.day, cycle: 2, priority: 2)
+    lower_priority_task = Task.create!(title: "Lower priority", due_on: Date.current + 5.days, cycle: 2, priority: 1, view: views(:unassigned))
+    higher_priority_task = Task.create!(title: "Higher priority", due_on: Date.current + 1.day, cycle: 2, priority: 2, view: views(:unassigned))
 
     get tasks_url
 
@@ -43,8 +43,8 @@ class TasksControllerTest < ActionDispatch::IntegrationTest
   test "index puts completed tasks at the end" do
     Task.delete_all
 
-    incomplete_task = Task.create!(title: "Incomplete", due_on: Date.current + 1.day, cycle: 2, priority: 1)
-    completed_task = Task.create!(title: "Completed", due_on: Date.current, cycle: 2, priority: 1, completed: true)
+    incomplete_task = Task.create!(title: "Incomplete", due_on: Date.current + 1.day, cycle: 2, priority: 1, view: views(:unassigned))
+    completed_task = Task.create!(title: "Completed", due_on: Date.current, cycle: 2, priority: 1, completed: true, view: views(:unassigned))
 
     get tasks_url
 
@@ -114,12 +114,12 @@ class TasksControllerTest < ActionDispatch::IntegrationTest
   test "sorts tasks with completed last, then priority, then due ratio" do
     Task.delete_all
 
-    lower_priority_task = Task.create!(title: "Lower priority", due_on: Date.current + 5.days, cycle: 2, priority: 1)
-    higher_priority_task = Task.create!(title: "Higher priority", due_on: Date.current + 1.day, cycle: 2, priority: 2)
-    completed_task = Task.create!(title: "Completed", due_on: Date.current, cycle: 2, priority: 1, completed: true)
+    lower_priority_task = Task.create!(title: "Lower priority", due_on: Date.current + 5.days, cycle: 2, priority: 1, view: views(:unassigned))
+    higher_priority_task = Task.create!(title: "Higher priority", due_on: Date.current + 1.day, cycle: 2, priority: 2, view: views(:unassigned))
+    completed_task = Task.create!(title: "Completed", due_on: Date.current, cycle: 2, priority: 1, completed: true, view: views(:unassigned))
 
-    controller = TasksController.new
-    sorted_ids = [lower_priority_task, higher_priority_task, completed_task].sort_by { |task| controller.send(:task_sort_key, task) }.pluck(:id)
+    # controller = TasksController.new
+    sorted_ids = [lower_priority_task, higher_priority_task, completed_task].sort_by(&:urgency_sort_key).pluck(:id)
 
     assert_equal [lower_priority_task.id, higher_priority_task.id, completed_task.id], sorted_ids
   end
