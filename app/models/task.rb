@@ -8,9 +8,7 @@ class Task < ApplicationRecord
     validates :priority, presence: true, inclusion: { in: 1..5 }
     validates :cycle, numericality: { only_integer: true, greater_than_or_equal_to: 0 }, allow_nil: true
 
-    def self.sorted_by_urgency
-        all.sort_by(&:urgency_sort_key)
-    end
+    scope :sorted_by_urgency, -> { sort_by(&:urgency_sort_key) }
 
     def urgency_sort_key
         days_until_due = due_on ? (due_on - Date.current).to_i : 0

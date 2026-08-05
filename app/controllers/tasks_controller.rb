@@ -4,6 +4,7 @@ class TasksController < ApplicationController
   # GET /tasks or /tasks.json
   def index
     @tasks = Task.sorted_by_urgency
+    @views = View.all  # ordered by position automatically — acts_as_list default scope
   end
 
   # GET /tasks/1 or /tasks/1.json

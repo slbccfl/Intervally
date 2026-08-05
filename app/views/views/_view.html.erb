@@ -1,0 +1,17 @@
+<div id="<%= dom_id view %>" class="flex items-center justify-between rounded <%= view == active_view ? "bg-blue-200 hover:bg-blue-300" : "bg-gray-200 hover:bg-gray-300" %>">
+  <%= link_to view_path(view), class: "flex-1 px-3 py-2 text-sm font-medium text-gray-800" do %>
+    <%= view.name %>
+  <% end %>
+
+  <div class="flex items-center gap-2 px-3 py-2">
+    <% unless view.unassigned? %>
+      <%= button_to edit_view_path(view), method: :get, data: { turbo_frame: "modal" } do %>
+        <i class="fa-solid fa-pen"></i>
+      <% end %>
+
+      <%= button_to view_path(view), method: :delete, form: { data: { turbo: view != active_view }, onsubmit: "return confirm('Are you sure?')" } do %>
+        <i class="fa-solid fa-trash-can"></i>
+      <% end %>
+    <% end %>
+  </div>
+</div>

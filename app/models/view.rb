@@ -13,10 +13,14 @@ class View < ApplicationRecord
   before_destroy :prevent_unassigned_deletion
   before_destroy :reassign_tasks_to_unassigned
 
+  def unassigned?
+    name == UNASSIGNED_NAME
+  end
+
   private
 
   def prevent_unassigned_deletion
-    if name == UNASSIGNED_NAME
+    if unassigned?
       errors.add(:base, "The Unassigned view cannot be deleted")
       throw :abort
     end

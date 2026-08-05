@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  root "tasks#index" 
+  root to: "views#root"
 
   resources :tasks do
     member do
@@ -7,6 +7,7 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :views, except: [:index]
   resources :labels
 
 

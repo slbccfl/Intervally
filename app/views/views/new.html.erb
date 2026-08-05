@@ -1,0 +1,13 @@
+<turbo-frame id="modal">
+  <div data-controller="modal" data-action="turbo:submit-end->modal#hideOnSubmit keydown.esc->modal#hide" role="dialog" tabindex="-1" class="fixed inset-0 z-30 flex items-center justify-center w-full h-screen p-2">
+    <%# Modal wrapper %>
+    <div role="dialog" tabindex="-1" class="fixed inset-0 z-30 flex items-center justify-center w-full h-screen p-2">
+      <%# Backdrop that closes the modal on click - The click is not working %>
+      <%= button_to nil, nil, type: :button, method: :get, form: { data: {action: "modal#hide"} }, class: "fixed inset-0 block w-full h-screen cursor-default bg-gray-900/30" %>
+      <div class="relative z-20 w-full max-w-2x1 max-h-hscreen overflow-y-auto gb-white shadow-lg rounded-lg p-6">
+        <%# Modal content %>
+        <%= render "form", view: @view %>
+      </div>
+    </div>
+  </div>
+</turbo-frame>
