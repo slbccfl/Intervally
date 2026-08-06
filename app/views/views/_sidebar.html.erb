@@ -1,5 +1,5 @@
 <h2 class="text-3xl font-extrabold text-gray-900 tracking-tight mb-2">Views</h2>
-<div id="view-list" class="flex flex-col gap-1 w-48">
+<div id="view-list" class="flex flex-col gap-1 w-48" data-controller="sortable">
   <% views.each do |view| %>
     <%= render view, active_view: active_view %>
   <% end %>

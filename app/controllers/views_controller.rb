@@ -1,5 +1,5 @@
 class ViewsController < ApplicationController
-  before_action :set_view, only: %i[ show edit update destroy ]
+  before_action :set_view, only: %i[ show edit update destroy move]
 
   # GET /views/1
   def show
@@ -15,6 +15,12 @@ class ViewsController < ApplicationController
   # GET /views/new
   def new
     @view = View.new
+  end
+
+  # PATCH /views/1/move
+  def move
+    @view.insert_at(params[:position].to_i)
+    head :ok
   end
 
   # GET /views/1/edit

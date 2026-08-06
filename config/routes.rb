@@ -7,7 +7,11 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :views, except: [:index]
+  resources :views, except: [:index] do
+    member do
+      patch :move
+    end
+  end
   resources :labels
 
 

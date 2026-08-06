@@ -1,4 +1,4 @@
-<div id="<%= dom_id view %>" class="flex items-center justify-between rounded <%= view == active_view ? "bg-blue-200 hover:bg-blue-300" : "bg-gray-200 hover:bg-gray-300" %>">
+<div id="<%= dom_id view %>" data-view-id="<%= view.id %>" class="flex items-center justify-between rounded <%= view == active_view ? "bg-blue-200 hover:bg-blue-300" : "bg-gray-200 hover:bg-gray-300" %>">
   <%= link_to view_path(view), class: "flex-1 px-3 py-2 text-sm font-medium text-gray-800" do %>
     <%= view.name %>
   <% end %>
