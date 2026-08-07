@@ -113,6 +113,16 @@ class TasksControllerTest < ActionDispatch::IntegrationTest
     assert @task.reload.completed
   end
 
+  test "marking a task incomplete does not trigger rescheduling" do
+    @task.update!(completed: true, cycle: 5, due_on: Date.current)
+
+    patch toggle_status_task_url(@task), params: { completed: "false" }
+
+    assert_redirected_to tasks_url
+    assert_not @task.reload.completed
+    assert_equal Date.current, @task.reload.due_on
+  end
+
   test "sorts tasks with completed last, then priority, then due ratio" do
     Task.delete_all
 
