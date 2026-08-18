@@ -6,7 +6,7 @@
       <%= button_to nil, nil, type: :button, method: :get, form: { data: {action: "modal#hide"} }, class: "fixed inset-0 block w-full h-screen cursor-default bg-gray-900/30" %>
       <div class="relative z-20 w-full max-w-2x1 max-h-hscreen overflow-y-auto gb-white shadow-lg rounded-lg p-6">
         <%# Modal content %>
-        <%= render "form", view: @view %>
+        <%= render "form", view: @view, active_view_id: @active_view_id %>
       </div>
     </div>
   </div>

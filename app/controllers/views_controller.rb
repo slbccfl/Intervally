@@ -15,6 +15,7 @@ class ViewsController < ApplicationController
   # GET /views/new
   def new
     @view = View.new
+    @active_view_id = params[:active_view_id].presence
   end
 
   # PATCH /views/1/move
@@ -25,6 +26,7 @@ class ViewsController < ApplicationController
 
   # GET /views/1/edit
   def edit
+    @active_view_id = params[:active_view_id].presence || @view.id
   end
 
   # POST /views
@@ -36,7 +38,7 @@ class ViewsController < ApplicationController
         flash[:notice] = "View created."
         format.turbo_stream do
           render turbo_stream: [
-            turbo_stream.append("view-list", partial: "views/view", locals: { view: @view, active_view: nil }),
+            turbo_stream.append("view-list", partial: "views/view", locals: { view: @view, active_view: View.find_by(id: params[:active_view_id]) || View.find_by!(name: View::UNASSIGNED_NAME)  }),
             turbo_stream.update("flash-container") { render_to_string(partial: "application/flashes") }
           ]
         end
@@ -66,7 +68,7 @@ class ViewsController < ApplicationController
         flash[:notice] = "View updated."
         format.turbo_stream do
           render turbo_stream: [
-            turbo_stream.replace(@view),
+            turbo_stream.replace(@view, partial: "views/view", locals: { view: @view, active_view: resolved_active_view }),
             turbo_stream.update("flash-container") { render_to_string(partial: "application/flashes") }
           ]
         end
@@ -108,6 +110,10 @@ class ViewsController < ApplicationController
   private
     def set_view
       @view = View.find(params.expect(:id))
+    end
+
+    def resolved_active_view
+      View.find_by(id: params[:active_view_id]) || @view
     end
 
     def view_params

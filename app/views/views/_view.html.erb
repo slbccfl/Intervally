@@ -5,7 +5,7 @@
 
   <div class="flex items-center gap-2 px-3 py-2">
     <% unless view.unassigned? %>
-      <%= button_to edit_view_path(view), method: :get, data: { turbo_frame: "modal" } do %>
+      <%= button_to edit_view_path(view), method: :get, params: { active_view_id: active_view.id }, data: { turbo_frame: "modal" } do %>
         <i class="fa-solid fa-pen"></i>
       <% end %>
 
