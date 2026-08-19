@@ -13,7 +13,7 @@ class TasksController < ApplicationController
 
   # GET /tasks/new
   def new
-    @task = Task.new
+    @task = Task.new(view_id: params[:view_id].presence || default_view_id)
   end
 
   # GET /tasks/1/edit
@@ -22,14 +22,14 @@ class TasksController < ApplicationController
 
   # POST /tasks or /tasks.json
   def create
-    @task = Task.new(task_params.merge(view_id: default_view_id))
+    @task = Task.new(task_params.merge(view_id: task_params[:view_id].presence || default_view_id))
 
     respond_to do |format|
       if @task.save
         flash[:notice] = "Task created."
         format.turbo_stream do
           render turbo_stream: [
-            turbo_stream.replace("task-list", partial: "tasks/task_list", locals: { tasks: Task.sorted_by_urgency }),
+            turbo_stream.replace("task-list", partial: "tasks/task_list", locals: { tasks: @task.view.tasks.sorted_by_urgency }),
             turbo_stream.update("flash-container") { render_to_string(partial: "application/flashes") }
           ]
         end
@@ -48,7 +48,7 @@ class TasksController < ApplicationController
         flash[:notice] = "Task updated."
         format.turbo_stream do
           render turbo_stream: [
-            turbo_stream.replace("task-list", partial: "tasks/task_list", locals: { tasks: Task.sorted_by_urgency }),
+            turbo_stream.replace("task-list", partial: "tasks/task_list", locals: { tasks: @task.view.tasks.sorted_by_urgency }),
             turbo_stream.update("flash-container") { render_to_string(partial: "application/flashes") }
           ]
         end
@@ -80,7 +80,7 @@ class TasksController < ApplicationController
         end
         format.turbo_stream do
           render turbo_stream: [
-            turbo_stream.replace("task-list", partial: "tasks/task_list", locals: { tasks: Task.sorted_by_urgency }),
+            turbo_stream.replace("task-list", partial: "tasks/task_list", locals: { tasks: @task.view.tasks.sorted_by_urgency }),
             turbo_stream.update("flash-container") { render_to_string(partial: "application/flashes") }
           ]
         end
@@ -127,6 +127,6 @@ class TasksController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def task_params
-      params.expect(task: [ :title, :description, :completed, :priority, :label_id, :due_on, :cycle ])
+      params.expect(task: [ :title, :description, :completed, :priority, :label_id, :due_on, :cycle, :view_id ])
     end
 end

@@ -1,5 +1,6 @@
 <%= form_with(model: view, local: true, class: "flex flex-col gap-6 max-w-lg bg-white p-6 rounded-xl shadow-sm border border-gray-500") do |form| %>
-  
+  <%= form.hidden_field :view_id %>
+
   <% if local_assigns.key?(:active_view_id) %>
     <%= hidden_field_tag :active_view_id, active_view_id %>
   <% end %>
