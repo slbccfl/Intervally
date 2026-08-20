@@ -5,4 +5,4 @@
   <% end %>
 </div>
 
-<%= link_to "New View", new_view_path(active_view_id: active_view.id), data: { turbo_frame: "modal" }, class: "text-sm text-blue-600 hover:underline mt-2" %>
+<%= link_to "New View", new_view_path(active_view_id: active_view&.id), data: { turbo_frame: "modal" }, class: "text-sm text-blue-600 hover:underline mt-2" %>
