@@ -25,7 +25,7 @@ class TasksControllerTest < ActionDispatch::IntegrationTest
     get tasks_url
 
     assert_response :success
-    assert_equal [earlier_task.id, later_task.id, no_cycle_task.id], assigns(:tasks).pluck(:id)
+    assert_equal [ earlier_task.id, later_task.id, no_cycle_task.id ], assigns(:tasks).pluck(:id)
   end
 
   test "index prioritizes tasks by priority before due ratio" do
@@ -37,7 +37,7 @@ class TasksControllerTest < ActionDispatch::IntegrationTest
     get tasks_url
 
     assert_response :success
-    assert_equal [lower_priority_task.id, higher_priority_task.id], assigns(:tasks).pluck(:id)
+    assert_equal [ lower_priority_task.id, higher_priority_task.id ], assigns(:tasks).pluck(:id)
   end
 
   test "index puts completed tasks at the end" do
@@ -49,7 +49,7 @@ class TasksControllerTest < ActionDispatch::IntegrationTest
     get tasks_url
 
     assert_response :success
-    assert_equal [incomplete_task.id, completed_task.id], assigns(:tasks).pluck(:id)
+    assert_equal [ incomplete_task.id, completed_task.id ], assigns(:tasks).pluck(:id)
   end
 
   test "flash messages should allow pointer interactions" do
@@ -131,8 +131,8 @@ class TasksControllerTest < ActionDispatch::IntegrationTest
     completed_task = Task.create!(title: "Completed", due_on: Date.current, cycle: 2, priority: 1, completed: true, view: views(:unassigned))
 
     # controller = TasksController.new
-    sorted_ids = [lower_priority_task, higher_priority_task, completed_task].sort_by(&:urgency_sort_key).pluck(:id)
+    sorted_ids = [ lower_priority_task, higher_priority_task, completed_task ].sort_by(&:urgency_sort_key).pluck(:id)
 
-    assert_equal [lower_priority_task.id, higher_priority_task.id, completed_task.id], sorted_ids
+    assert_equal [ lower_priority_task.id, higher_priority_task.id, completed_task.id ], sorted_ids
   end
 end

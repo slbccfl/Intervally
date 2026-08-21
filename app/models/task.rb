@@ -15,6 +15,6 @@ class Task < ApplicationRecord
         cycle_value = cycle.present? && cycle.to_i.positive? ? cycle.to_f : Float::INFINITY
         due_ratio = cycle_value == Float::INFINITY ? Float::INFINITY : (days_until_due / cycle_value)
 
-        [completed? ? 1 : 0, priority.to_i, due_ratio, due_on]
+        [ completed? ? 1 : 0, priority.to_i, due_ratio, due_on ]
     end
 end

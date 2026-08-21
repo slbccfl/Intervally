@@ -10,10 +10,10 @@ class LabelsController < ApplicationController
     def new
         @label = Label.new
     end
-    
+
     def create
         @label = Label.new(label_params)
-        
+
         if @label.save
             flash[:notice] = "Label was successfully created."
             redirect_to label_path(@label)
@@ -28,7 +28,7 @@ class LabelsController < ApplicationController
 
     def update
         @label = Label.find(params[:id])
-        
+
         if @label.update(label_params)
             flash[:notice] = "Label was successfully updated."
             redirect_to label_path(@label)

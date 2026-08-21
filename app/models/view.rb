@@ -4,7 +4,7 @@ class View < ApplicationRecord
   # Handles the automatic drag-and-drop position sorting
   acts_as_list
 
-  # Relates views to tasks. 
+  # Relates views to tasks.
   has_many :tasks
 
   # A view must have a name to be valid

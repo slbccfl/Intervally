@@ -8,7 +8,7 @@ module ApplicationHelper
         end
         html.join.html_safe
     end
-    
+
   def bg_color_for_priority(priority)
     case priority
     when 1 then "bg-red-500"
