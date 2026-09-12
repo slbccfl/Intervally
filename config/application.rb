@@ -9,7 +9,7 @@ Bundler.require(*Rails.groups)
 module Intervally
   # Current app version. Bumped by hand at each release, per the semver
   # standard in intervally-conventions.md. Displayed in the page header.
-  VERSION = "0.2.0"
+  VERSION = "0.2.1"
 
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
@@ -25,7 +25,7 @@ module Intervally
     # These settings can be overridden in specific environments using the files
     # in config/environments, which are processed later.
     #
-    # config.time_zone = "Central Time (US & Canada)"
+    config.time_zone = "Pacific Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
   end
 end
