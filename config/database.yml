@@ -13,12 +13,18 @@ development:
   <<: *default
   database: storage/development.sqlite3
 
-# Warning: The database defined as "test" will be erased and
-# re-generated from your development database when you run "rake".
-# Do not set this db to the same as development or production.
+# Test database is Postgres (matching production), separate from the SQLite
+# database used for development — this is deliberate, not a copy/regeneration
+# of development. See intervally-conventions.md for why: local-Postgres test
+# runs are a required check before considering any card done.
 test:
-  <<: *default
-  database: storage/test.sqlite3
+  adapter: postgresql
+  encoding: unicode
+  host: localhost
+  database: intervally_test
+  username: intervally
+  password: <%= ENV.fetch("INTERVALLY_DATABASE_PASSWORD") { "" } %>
+  max_connections: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
 
 # Store production database in the storage/ directory, which by default
 # is mounted as a persistent Docker volume in config/deploy.yml.
