@@ -9,7 +9,7 @@ Bundler.require(*Rails.groups)
 module Intervally
   # Current app version. Bumped by hand at each release, per the semver
   # standard in intervally-conventions.md. Displayed in the page header.
-  VERSION = "0.2.1"
+  VERSION = "0.2.2"
 
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
