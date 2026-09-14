@@ -4,6 +4,7 @@ class View < ApplicationRecord
   # Handles the automatic drag-and-drop position sorting
   acts_as_list
 
+  belongs_to :board
   # Relates views to tasks.
   has_many :tasks
 

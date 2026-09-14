@@ -31,7 +31,7 @@ class ViewsController < ApplicationController
 
   # POST /views
   def create
-    @view = View.new(view_params)
+    @view = View.new(view_params.merge(board_id: default_board_id))
 
     respond_to do |format|
       if @view.save
@@ -118,5 +118,9 @@ class ViewsController < ApplicationController
 
     def view_params
       params.expect(view: [ :name ])
+    end
+
+    def default_board_id
+      Board.find_by!(name: Board::DEFAULT_NAME).id
     end
 end

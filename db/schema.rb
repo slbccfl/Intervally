@@ -10,7 +10,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_06_230500) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_14_015821) do
+  create_table "boards", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "name", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "labels", force: :cascade do |t|
     t.boolean "active", default: true, null: false
     t.datetime "created_at", null: false
@@ -34,13 +40,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_06_230500) do
   end
 
   create_table "views", force: :cascade do |t|
+    t.integer "board_id", null: false
     t.datetime "created_at", null: false
     t.string "name", null: false
     t.integer "position", default: 1, null: false
     t.datetime "updated_at", null: false
+    t.index ["board_id"], name: "index_views_on_board_id"
     t.index ["position"], name: "index_views_on_position"
   end
 
   add_foreign_key "tasks", "labels"
   add_foreign_key "tasks", "views"
+  add_foreign_key "views", "boards"
 end
