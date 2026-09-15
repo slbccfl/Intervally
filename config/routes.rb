@@ -15,6 +15,7 @@ Rails.application.routes.draw do
     end
   end
   resources :labels
+  resources :boards, only: :destroy
 
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
