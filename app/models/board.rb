@@ -6,6 +6,7 @@ class Board < ApplicationRecord
   validates :name, presence: true
 
   before_destroy :prevent_default_deletion
+  before_destroy :reassign_views_to_default
 
   def default?
     name == DEFAULT_NAME
@@ -18,5 +19,9 @@ class Board < ApplicationRecord
       errors.add(:base, "The Default board cannot be deleted")
       throw :abort
     end
+  end
+  
+  def reassign_views_to_default
+    views.update_all(board_id: Board.find_by!(name: DEFAULT_NAME).id)
   end
 end
