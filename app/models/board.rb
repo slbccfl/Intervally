@@ -1,6 +1,8 @@
 class Board < ApplicationRecord
   DEFAULT_NAME = "Default"
 
+  acts_as_list
+  
   has_many :views
 
   validates :name, presence: true
