@@ -71,7 +71,13 @@ class ViewsControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
-    test "strong params should not permit position" do
+  test "should move view" do
+    patch move_view_url(@view), params: { position: 1 }
+    assert_response :success
+    assert_equal 1, @view.reload.position
+  end
+
+  test "strong params should not permit position" do
     view_count_before = View.count
 
     post views_url, params: { view: { name: "Position Test", position: 99 } }
