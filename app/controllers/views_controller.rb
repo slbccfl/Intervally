@@ -7,11 +7,6 @@ class ViewsController < ApplicationController
     @views = View.order(:position)
   end
 
-  # GET / (root)
-  def root
-    redirect_to view_path(View.find_by!(name: View::UNASSIGNED_NAME))
-  end
-
   # GET /views/new
   def new
     @view = View.new

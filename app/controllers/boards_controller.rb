@@ -1,5 +1,13 @@
 class BoardsController < ApplicationController
-  before_action :set_board, only: :destroy
+  before_action :set_board, only: %i[ show destroy ]
+
+  def root
+    redirect_to board_path(Board.find_by!(name: Board::DEFAULT_NAME))
+  end
+
+  def show
+    @views = @board.views.order(:position)
+  end
 
   def destroy
     if @board.default?

@@ -42,4 +42,16 @@ class BoardsControllerTest < ActionDispatch::IntegrationTest
       delete board_url(@default)
     end
   end
+
+  test "root redirects to default board" do
+    get root_path
+    assert_redirected_to board_path(@default)
+  end
+
+  test "should show board with its views" do
+    get board_path(@default)
+    assert_response :success
+    assert_includes @response.body, "Unassigned"
+    assert_includes @response.body, "Secondary View"
+  end
 end

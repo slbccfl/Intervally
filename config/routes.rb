@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
   get "up" => "rails/health#show", as: :rails_health_check
 
-  root to: "views#root"
+  root to: "boards#root"
 
   resources :tasks do
     member do
@@ -15,7 +15,7 @@ Rails.application.routes.draw do
     end
   end
   resources :labels
-  resources :boards, only: :destroy
+  resources :boards, only: %i[ show destroy ]
 
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html

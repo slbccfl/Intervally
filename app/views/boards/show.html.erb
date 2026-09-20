@@ -1,0 +1,7 @@
+<h1><%= @board.name %></h1>
+
+<ul>
+  <% @views.each do |view| %>
+    <li><%= link_to view.name, view_path(view) %></li>
+  <% end %>
+</ul>
