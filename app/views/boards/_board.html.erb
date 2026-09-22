@@ -1,0 +1,17 @@
+<div id="<%= dom_id board %>" data-sortable-id="<%= board.id %>" class="flex items-center justify-between rounded <%= board == current_board ? "bg-blue-200 hover:bg-blue-300" : "bg-gray-200 hover:bg-gray-300" %>">
+  <%= link_to board_path(board), class: "flex-1 px-3 py-2 text-sm font-medium text-gray-800" do %>
+    <%= board.name %>
+  <% end %>
+
+  <div class="flex items-center gap-2 px-3 py-2">
+    <% unless board.default? %>
+      <%= button_to edit_board_path(board), method: :get, data: { turbo_frame: "modal" } do %>
+        <i class="fa-solid fa-pen"></i>
+      <% end %>
+
+      <%= button_to board_path(board), method: :delete, form: { data: { turbo: board != current_board }, onsubmit: "return confirm('Are you sure?')" } do %>
+        <i class="fa-solid fa-trash-can"></i>
+      <% end %>
+    <% end %>
+  </div>
+</div>

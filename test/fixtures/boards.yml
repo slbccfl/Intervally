@@ -1,2 +1,5 @@
 default:
   name: Default
+
+secondary:
+  name: Secondary Board

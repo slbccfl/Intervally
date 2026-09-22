@@ -15,7 +15,7 @@ Rails.application.routes.draw do
     end
   end
   resources :labels
-  resources :boards, only: %i[ show destroy ]
+  resources :boards, only: %i[ show new create edit update destroy ]
 
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html

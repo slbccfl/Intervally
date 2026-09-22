@@ -1,7 +1,15 @@
-<h1><%= @board.name %></h1>
+<div class="max-w-6xl mx-auto p-6 bg-gray-50 min-h-screen flex gap-6">
+  <div class="w-56 shrink-0">
+    <%= render "boards/sidebar", boards: @boards, current_board: @board %>
+  </div>
 
-<ul>
-  <% @views.each do |view| %>
-    <li><%= link_to view.name, view_path(view) %></li>
-  <% end %>
-</ul>
+  <div class="flex-1">
+    <h1 class="text-3xl font-extrabold text-gray-900 tracking-tight mb-6"><%= @board.name %></h1>
+
+    <ul>
+      <% @views.each do |view| %>
+        <li><%= link_to view.name, view_path(view) %></li>
+      <% end %>
+    </ul>
+  </div>
+</div>
