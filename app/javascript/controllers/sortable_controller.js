@@ -2,14 +2,16 @@ import { Controller } from "@hotwired/stimulus"
 import Sortable from "sortablejs"
 
 export default class extends Controller {
+  static values = { urlBase: String }
+
   connect() {
     this.sortable = Sortable.create(this.element, {
       animation: 150,
       onEnd: (event) => {
-        const viewId = event.item.dataset.viewId
+        const sortableId = event.item.dataset.sortableId
         const newPosition = event.newIndex + 1
 
-        fetch(`/views/${viewId}/move`, {
+        fetch(`${this.urlBaseValue}/${sortableId}/move`, {
           method: "PATCH",
           headers: {
             "Content-Type": "application/json",

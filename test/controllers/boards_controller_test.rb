@@ -60,6 +60,12 @@ class BoardsControllerTest < ActionDispatch::IntegrationTest
     assert_equal "Default", @default.reload.name
   end
 
+  test "should move board" do
+    patch move_board_url(@board), params: { position: 1 }
+    assert_response :success
+    assert_equal 1, @board.reload.position
+  end  
+
   test "should destroy board and reassign its views to default" do
     board = Board.create!(name: "Temp Board")
     view = View.create!(name: "Temp View", board: board)

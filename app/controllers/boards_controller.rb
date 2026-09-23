@@ -1,5 +1,5 @@
 class BoardsController < ApplicationController
-  before_action :set_board, only: %i[ show edit update destroy ]
+  before_action :set_board, only: %i[ show edit update destroy move ]
 
   def root
     redirect_to board_path(Board.find_by!(name: Board::DEFAULT_NAME))
@@ -8,6 +8,11 @@ class BoardsController < ApplicationController
   def show
     @boards = Board.order(:position)
     @views = @board.views.order(:position)
+  end
+  
+  def move
+    @board.insert_at(params[:position].to_i)
+    head :ok
   end
 
   def new
