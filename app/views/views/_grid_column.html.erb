@@ -1,0 +1,4 @@
+<div id="view-column-<%= view.id %>" class="flex flex-col gap-2">
+  <%= render "views/view_header", view: view %>
+  <%= render "tasks/task_list", tasks: view.tasks.sorted_by_urgency, dom_id: "task-list-#{view.id}" %>
+</div>

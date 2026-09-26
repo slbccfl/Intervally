@@ -10,6 +10,7 @@ class ViewsController < ApplicationController
   # GET /views/new
   def new
     @view = View.new
+    @view.board_id = params[:board_id].presence || default_board_id
     @active_view_id = params[:active_view_id].presence
   end
 
@@ -26,7 +27,7 @@ class ViewsController < ApplicationController
 
   # POST /views
   def create
-    @view = View.new(view_params.merge(board_id: default_board_id))
+    @view = View.new(view_params.merge(board_id: params[:board_id].presence || default_board_id))
 
     respond_to do |format|
       if @view.save
@@ -34,6 +35,7 @@ class ViewsController < ApplicationController
         format.turbo_stream do
           render turbo_stream: [
             turbo_stream.append("view-list", partial: "views/view", locals: { view: @view, active_view: View.find_by(id: params[:active_view_id]) || View.find_by!(name: View::UNASSIGNED_NAME)  }),
+            turbo_stream.append("view-grid", partial: "views/grid_column", locals: { view: @view }),
             turbo_stream.update("flash-container") { render_to_string(partial: "application/flashes") }
           ]
         end

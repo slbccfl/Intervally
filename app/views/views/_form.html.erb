@@ -5,6 +5,10 @@
     <%= hidden_field_tag :active_view_id, active_view_id %>
   <% end %>
 
+  <% if local_assigns.key?(:board_id) %>
+    <%= hidden_field_tag :board_id, board_id %>
+  <% end %>
+
   <h2 class="text-2xl font-bold"><%= action_name.capitalize %> View</h2>
 
   <%= render "application/flashes" %>

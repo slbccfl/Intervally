@@ -83,5 +83,28 @@ class ViewsControllerTest < ActionDispatch::IntegrationTest
     post views_url, params: { view: { name: "Position Test", position: 99 } }
 
     assert_equal view_count_before + 1, View.find_by!(name: "Position Test").position
+  end
+  
+  test "should create view on the given board" do
+    board = Board.create!(name: "Weekly")
+
+    assert_difference("View.count") do
+      post views_url, params: { view: { name: "New Weekly View" }, board_id: board.id }
     end
+
+    assert_equal board.id, View.find_by!(name: "New Weekly View").board_id
+  end
+
+  test "should create view with turbo stream and append to board grid" do
+    board = Board.create!(name: "Weekly")
+
+    assert_difference("View.count") do
+      post views_url,
+        params: { view: { name: "Grid View" }, board_id: board.id },
+        headers: { "Accept" => "text/vnd.turbo-stream.html" }
+    end
+
+    view = View.find_by!(name: "Grid View")
+    assert_includes @response.body, "view-column-#{view.id}"
+  end
 end
