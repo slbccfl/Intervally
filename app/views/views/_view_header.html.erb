@@ -1,0 +1,15 @@
+<div class="flex items-center justify-between w-60 mb-2">
+  <h3 class="text-sm font-semibold text-gray-800"><%= view.name %></h3>
+
+  <div class="flex items-center gap-2">
+    <% unless view.unassigned? %>
+      <%= button_to edit_view_path(view), method: :get, data: { turbo_frame: "modal" } do %>
+        <i class="fa-solid fa-pen"></i>
+      <% end %>
+
+      <%= button_to view_path(view), method: :delete, data: { turbo: false }, form: { onsubmit: "return confirm('Are you sure?')" } do %>
+        <i class="fa-solid fa-trash-can"></i>
+      <% end %>
+    <% end %>
+  </div>
+</div>
