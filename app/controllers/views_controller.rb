@@ -25,7 +25,7 @@ class ViewsController < ApplicationController
     @view.move_to_bottom
 
     respond_to do |format|
-      format.turbo_stream { render turbo_stream: turbo_stream.remove(@view) }
+      format.turbo_stream { render turbo_stream: turbo_stream.remove("view-column-#{@view.id}") }
     end
   end
 

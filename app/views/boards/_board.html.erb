@@ -1,4 +1,4 @@
-<div id="<%= dom_id board %>" data-sortable-id="<%= board.id %>" class="flex items-center justify-between rounded <%= board == current_board ? "bg-blue-200 hover:bg-blue-300" : "bg-gray-200 hover:bg-gray-300" %>">
+<div id="<%= dom_id board %>" data-sortable-id="<%= board.id %>" data-controller="board-drop" data-board-drop-board-id-value="<%= board.id %>" data-action="dragover->board-drop#dragOver dragleave->board-drop#dragLeave drop->board-drop#drop" class="flex items-center justify-between rounded <%= board == current_board ? "bg-blue-200 hover:bg-blue-300" : "bg-gray-200 hover:bg-gray-300" %>">
   <%= link_to board_path(board), class: "flex-1 px-3 py-2 text-sm font-medium text-gray-800" do %>
     <%= board.name %>
   <% end %>
