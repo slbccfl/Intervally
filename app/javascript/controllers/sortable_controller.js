@@ -2,11 +2,12 @@ import { Controller } from "@hotwired/stimulus"
 import Sortable from "sortablejs"
 
 export default class extends Controller {
-  static values = { urlBase: String }
+  static values = { urlBase: String, handle: String }
 
   connect() {
     this.sortable = Sortable.create(this.element, {
       animation: 150,
+      handle: this.hasHandleValue ? this.handleValue : undefined,
       onEnd: (event) => {
         const sortableId = event.item.dataset.sortableId
         const newPosition = event.newIndex + 1

@@ -1,5 +1,10 @@
 <div class="flex items-center justify-between w-60 mb-2">
-  <h3 class="text-lg font-semibold text-gray-800"><%= view.name %></h3>
+  <div class="flex items-center gap-2">
+    <span class="drag-handle cursor-move text-gray-400 hover:text-gray-600">
+      <i class="fa-solid fa-grip-vertical"></i>
+    </span>
+    <h3 class="text-lg font-semibold text-gray-800"><%= view.name %></h3>
+  </div>
 
   <div class="flex items-center gap-2">
     <% unless view.unassigned? %>
