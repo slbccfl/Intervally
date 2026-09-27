@@ -107,4 +107,15 @@ class ViewsControllerTest < ActionDispatch::IntegrationTest
     view = View.find_by!(name: "Grid View")
     assert_includes @response.body, "view-column-#{view.id}"
   end
+
+  test "should reassign view to a different board and remove it from the page" do
+    other_board = Board.create!(name: "Other Board")
+
+    patch reassign_board_view_url(@view), params: { board_id: other_board.id }, headers: { "Accept" => "text/vnd.turbo-stream.html" }
+
+    assert_response :success
+    assert_equal other_board.id, @view.reload.board_id
+    assert_equal 1, @view.position
+    assert_includes @response.body, "action=\"remove\""
+  end
 end

@@ -12,6 +12,7 @@ Rails.application.routes.draw do
   resources :views, except: [ :index ] do
     member do
       patch :move
+      patch :reassign_board
     end
   end
   resources :labels

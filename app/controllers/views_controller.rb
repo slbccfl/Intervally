@@ -1,5 +1,5 @@
 class ViewsController < ApplicationController
-  before_action :set_view, only: %i[ show edit update destroy move]
+  before_action :set_view, only: %i[ show edit update destroy move reassign_board]
 
   # GET /views/1
   def show
@@ -18,6 +18,15 @@ class ViewsController < ApplicationController
   def move
     @view.insert_at(params[:position].to_i)
     head :ok
+  end
+
+  def reassign_board
+    @view.update!(board_id: params[:board_id])
+    @view.move_to_bottom
+
+    respond_to do |format|
+      format.turbo_stream { render turbo_stream: turbo_stream.remove(@view) }
+    end
   end
 
   # GET /views/1/edit
