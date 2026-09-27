@@ -7,7 +7,7 @@
     <h1 class="text-3xl font-extrabold text-gray-900 tracking-tight mb-6"><%= @board.name %></h1>
 
     <div class="flex gap-6 items-start overflow-x-auto">
-      <div id="view-grid" class="flex gap-6 items-start">
+      <div id="view-grid" class="flex gap-6 items-start" data-controller="sortable" data-sortable-url-base-value="/views">
         <% @views.each do |view| %>
           <%= render "views/grid_column", view: view %>
         <% end %>
