@@ -1,0 +1,19 @@
+<div class="max-w-6xl mx-auto p-6 bg-gray-50 min-h-screen flex gap-6">
+  <div class="w-56 shrink-0">
+    <%= render "boards/sidebar", boards: @boards, current_board: @board %>
+  </div>
+
+  <div class="flex-1">
+    <h1 class="text-3xl font-extrabold text-gray-900 tracking-tight mb-6"><%= @board.name %></h1>
+
+    <div class="flex gap-6 items-start overflow-x-auto">
+      <div id="view-grid" class="flex gap-6 items-start" data-controller="sortable" data-sortable-url-base-value="/views" data-sortable-handle-value=".drag-handle">
+        <% @views.each do |view| %>
+          <%= render "views/grid_column", view: view %>
+        <% end %>
+      </div>
+
+      <%= link_to "New View", new_view_path(board_id: @board.id), data: { turbo_frame: "modal" }, class: "text-sm text-blue-600 hover:underline whitespace-nowrap mt-2" %>
+    </div>  
+  </div>
+</div>

@@ -1,5 +1,5 @@
 <!-- Task List -->
-<div id="task-list" class="divide-y divide-gray-100 w-sm">
+<div id="<%= local_assigns.fetch(:dom_id, "task-list") %>" class="divide-y divide-gray-100 w-sm">
     <% tasks.each do |task| %>
     <%= render task %>
     <% end %>

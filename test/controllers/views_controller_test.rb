@@ -71,11 +71,51 @@ class ViewsControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
-    test "strong params should not permit position" do
+  test "should move view" do
+    patch move_view_url(@view), params: { position: 1 }
+    assert_response :success
+    assert_equal 1, @view.reload.position
+  end
+
+  test "strong params should not permit position" do
     view_count_before = View.count
 
     post views_url, params: { view: { name: "Position Test", position: 99 } }
 
     assert_equal view_count_before + 1, View.find_by!(name: "Position Test").position
+  end
+
+  test "should create view on the given board" do
+    board = Board.create!(name: "Weekly")
+
+    assert_difference("View.count") do
+      post views_url, params: { view: { name: "New Weekly View" }, board_id: board.id }
     end
+
+    assert_equal board.id, View.find_by!(name: "New Weekly View").board_id
+  end
+
+  test "should create view with turbo stream and append to board grid" do
+    board = Board.create!(name: "Weekly")
+
+    assert_difference("View.count") do
+      post views_url,
+        params: { view: { name: "Grid View" }, board_id: board.id },
+        headers: { "Accept" => "text/vnd.turbo-stream.html" }
+    end
+
+    view = View.find_by!(name: "Grid View")
+    assert_includes @response.body, "view-column-#{view.id}"
+  end
+
+  test "should reassign view to a different board and remove it from the page" do
+    other_board = Board.create!(name: "Other Board")
+
+    patch reassign_board_view_url(@view), params: { board_id: other_board.id }, headers: { "Accept" => "text/vnd.turbo-stream.html" }
+
+    assert_response :success
+    assert_equal other_board.id, @view.reload.board_id
+    assert_equal 1, @view.position
+    assert_includes @response.body, "action=\"remove\""
+  end
 end

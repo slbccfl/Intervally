@@ -1,0 +1,8 @@
+<h2 class="text-3xl font-extrabold text-gray-900 tracking-tight mb-2">Boards</h2>
+<div id="board-list" class="flex flex-col gap-1 w-48" data-controller="sortable" data-sortable-url-base-value="/boards">
+  <% boards.each do |board| %>
+    <%= render board, current_board: current_board %>
+  <% end %>
+</div>
+
+<%= link_to "New Board", new_board_path, data: { turbo_frame: "modal" }, class: "text-sm text-blue-600 hover:underline mt-2" %>

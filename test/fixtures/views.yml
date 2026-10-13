@@ -3,7 +3,9 @@
 unassigned:
   name: Unassigned
   position: 1
+  board: default
 
 secondary:
   name: Secondary View
   position: 2
+  board: default

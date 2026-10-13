@@ -2,7 +2,7 @@ require "test_helper"
 
 class ViewTest < ActiveSupport::TestCase
   test "destroying a view reassigns its tasks to Unassigned" do
-    view = View.create!(name: "Temp View")
+    view = View.create!(name: "Temp View", board: boards(:default))
     task = Task.create!(title: "x", due_on: Date.today, view: view)
 
     view.destroy
@@ -18,7 +18,7 @@ class ViewTest < ActiveSupport::TestCase
   end
 
   test "destroying a view does not delete its tasks" do
-    view = View.create!(name: "Temp View")
+    view = View.create!(name: "Temp View", board: boards(:default))
     task = Task.create!(title: "x", due_on: Date.today, view: view)
 
     assert_difference("Task.count", 0) do

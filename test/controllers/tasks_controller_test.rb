@@ -135,4 +135,22 @@ class TasksControllerTest < ActionDispatch::IntegrationTest
 
     assert_equal [ lower_priority_task.id, higher_priority_task.id, completed_task.id ], sorted_ids
   end
+
+  test "should update task with turbo stream and target the grid's task list" do
+    patch task_url(@task),
+      params: { task: { cycle: @task.cycle, description: @task.description, due_on: @task.due_on, title: "Updated Title" } },
+      headers: { "Accept" => "text/vnd.turbo-stream.html" }
+
+    assert_response :success
+    assert_includes @response.body, "target=\"task-list-#{@task.view.id}\""
+  end
+
+  test "should toggle task status with turbo stream and target the grid's task list" do
+    @task.update!(completed: false, cycle: nil)
+
+    patch toggle_status_task_url(@task), headers: { "Accept" => "text/vnd.turbo-stream.html" }
+
+    assert_response :success
+    assert_includes @response.body, "target=\"task-list-#{@task.view.id}\""
+  end
 end

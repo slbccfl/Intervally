@@ -2,8 +2,9 @@ class View < ApplicationRecord
   # The name of the unassigned view
   UNASSIGNED_NAME = "Unassigned"
   # Handles the automatic drag-and-drop position sorting
-  acts_as_list
+  acts_as_list scope: :board_id
 
+  belongs_to :board
   # Relates views to tasks.
   has_many :tasks
 

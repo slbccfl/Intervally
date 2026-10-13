@@ -30,6 +30,7 @@ class TasksController < ApplicationController
         format.turbo_stream do
           render turbo_stream: [
             turbo_stream.replace("task-list", partial: "tasks/task_list", locals: { tasks: @task.view.tasks.sorted_by_urgency }),
+            turbo_stream.replace("task-list-#{@task.view.id}", partial: "tasks/task_list", locals: { tasks: @task.view.tasks.sorted_by_urgency, dom_id: "task-list-#{@task.view.id}" }),
             turbo_stream.update("flash-container") { render_to_string(partial: "application/flashes") }
           ]
         end
@@ -49,6 +50,7 @@ class TasksController < ApplicationController
         format.turbo_stream do
           render turbo_stream: [
             turbo_stream.replace("task-list", partial: "tasks/task_list", locals: { tasks: @task.view.tasks.sorted_by_urgency }),
+            turbo_stream.replace("task-list-#{@task.view.id}", partial: "tasks/task_list", locals: { tasks: @task.view.tasks.sorted_by_urgency, dom_id: "task-list-#{@task.view.id}" }),
             turbo_stream.update("flash-container") { render_to_string(partial: "application/flashes") }
           ]
         end
@@ -81,6 +83,7 @@ class TasksController < ApplicationController
         format.turbo_stream do
           render turbo_stream: [
             turbo_stream.replace("task-list", partial: "tasks/task_list", locals: { tasks: @task.view.tasks.sorted_by_urgency }),
+            turbo_stream.replace("task-list-#{@task.view.id}", partial: "tasks/task_list", locals: { tasks: @task.view.tasks.sorted_by_urgency, dom_id: "task-list-#{@task.view.id}" }),
             turbo_stream.update("flash-container") { render_to_string(partial: "application/flashes") }
           ]
         end

@@ -1,5 +1,5 @@
 class ViewsController < ApplicationController
-  before_action :set_view, only: %i[ show edit update destroy move]
+  before_action :set_view, only: %i[ show edit update destroy move reassign_board]
 
   # GET /views/1
   def show
@@ -7,14 +7,10 @@ class ViewsController < ApplicationController
     @views = View.order(:position)
   end
 
-  # GET / (root)
-  def root
-    redirect_to view_path(View.find_by!(name: View::UNASSIGNED_NAME))
-  end
-
   # GET /views/new
   def new
     @view = View.new
+    @view.board_id = params[:board_id].presence || default_board_id
     @active_view_id = params[:active_view_id].presence
   end
 
@@ -24,6 +20,15 @@ class ViewsController < ApplicationController
     head :ok
   end
 
+  def reassign_board
+    @view.update!(board_id: params[:board_id])
+    @view.move_to_bottom
+
+    respond_to do |format|
+      format.turbo_stream { render turbo_stream: turbo_stream.remove("view-column-#{@view.id}") }
+    end
+  end
+
   # GET /views/1/edit
   def edit
     @active_view_id = params[:active_view_id].presence || @view.id
@@ -31,7 +36,7 @@ class ViewsController < ApplicationController
 
   # POST /views
   def create
-    @view = View.new(view_params)
+    @view = View.new(view_params.merge(board_id: params[:board_id].presence || default_board_id))
 
     respond_to do |format|
       if @view.save
@@ -39,6 +44,7 @@ class ViewsController < ApplicationController
         format.turbo_stream do
           render turbo_stream: [
             turbo_stream.append("view-list", partial: "views/view", locals: { view: @view, active_view: View.find_by(id: params[:active_view_id]) || View.find_by!(name: View::UNASSIGNED_NAME)  }),
+            turbo_stream.append("view-grid", partial: "views/grid_column", locals: { view: @view }),
             turbo_stream.update("flash-container") { render_to_string(partial: "application/flashes") }
           ]
         end
@@ -118,5 +124,9 @@ class ViewsController < ApplicationController
 
     def view_params
       params.expect(view: [ :name ])
+    end
+
+    def default_board_id
+      Board.find_by!(name: Board::DEFAULT_NAME).id
     end
 end

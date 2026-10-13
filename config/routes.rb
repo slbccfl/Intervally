@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
   get "up" => "rails/health#show", as: :rails_health_check
 
-  root to: "views#root"
+  root to: "boards#root"
 
   resources :tasks do
     member do
@@ -12,9 +12,15 @@ Rails.application.routes.draw do
   resources :views, except: [ :index ] do
     member do
       patch :move
+      patch :reassign_board
     end
   end
   resources :labels
+  resources :boards, only: %i[ show new create edit update destroy ] do
+    member do
+      patch :move
+    end
+  end
 
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
