@@ -2,7 +2,7 @@ class Board < ApplicationRecord
   DEFAULT_NAME = "Default"
 
   acts_as_list
-  
+
   has_many :views
 
   validates :name, presence: true
@@ -22,7 +22,7 @@ class Board < ApplicationRecord
       throw :abort
     end
   end
-  
+
   def reassign_views_to_default
     views.update_all(board_id: Board.find_by!(name: DEFAULT_NAME).id)
   end

@@ -9,7 +9,7 @@ class BoardsController < ApplicationController
     @boards = Board.order(:position)
     @views = @board.views.order(:position)
   end
-  
+
   def move
     @board.insert_at(params[:position].to_i)
     head :ok

@@ -84,7 +84,7 @@ class ViewsControllerTest < ActionDispatch::IntegrationTest
 
     assert_equal view_count_before + 1, View.find_by!(name: "Position Test").position
   end
-  
+
   test "should create view on the given board" do
     board = Board.create!(name: "Weekly")
 
