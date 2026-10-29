@@ -1,4 +1,12 @@
 class CreateBoardsAndAssignViews < ActiveRecord::Migration[8.1]
+  class MigrationBoard < ActiveRecord::Base
+    self.table_name = "boards"
+  end
+
+  class MigrationView < ActiveRecord::Base
+    self.table_name = "views"
+  end
+
   def up
     create_table :boards do |t|
       t.string :name, null: false
@@ -7,12 +15,8 @@ class CreateBoardsAndAssignViews < ActiveRecord::Migration[8.1]
 
     add_reference :views, :board, foreign_key: true
 
-    unless Board.exists?(name: Board::DEFAULT_NAME)
-      Board.create!(name: Board::DEFAULT_NAME)
-    end
-
-    default_board = Board.find_by!(name: Board::DEFAULT_NAME)
-    View.where(board_id: nil).update_all(board_id: default_board.id)
+    default_board = MigrationBoard.find_or_create_by!(name: "Default")
+    MigrationView.where(board_id: nil).update_all(board_id: default_board.id)
 
     change_column_null :views, :board_id, false
   end
