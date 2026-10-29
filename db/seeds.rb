@@ -7,3 +7,9 @@
 #   ["Action", "Comedy", "Drama", "Horror"].each do |genre_name|
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
+
+default_board = Board.find_or_create_by!(name: Board::DEFAULT_NAME)
+
+View.find_or_create_by!(name: View::UNASSIGNED_NAME) do |view|
+  view.board = default_board
+end
