@@ -25,4 +25,17 @@ class ViewTest < ActiveSupport::TestCase
       view.destroy
     end
   end
+
+  test "reordering views in one board does not affect another board's positions" do
+    other = Board.create!(name: "Other Board")
+    first = View.create!(name: "First", board: other)
+    second = View.create!(name: "Second", board: other)
+
+    second.insert_at(1)
+
+    assert_equal 1, second.reload.position
+    assert_equal 2, first.reload.position
+    assert_equal 1, views(:unassigned).reload.position
+    assert_equal 2, views(:secondary).reload.position
+  end
 end

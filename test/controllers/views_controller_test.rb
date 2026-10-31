@@ -118,4 +118,15 @@ class ViewsControllerTest < ActionDispatch::IntegrationTest
     assert_equal 1, @view.position
     assert_includes @response.body, "action=\"remove\""
   end
+
+  test "should place a reassigned view at the end of the target board's list" do
+    other = Board.create!(name: "Other Board")
+    View.create!(name: "First", board: other)
+    View.create!(name: "Second", board: other)
+
+    patch reassign_board_view_url(@view), params: { board_id: other.id }, headers: { "Accept" => "text/vnd.turbo-stream.html" }
+
+    assert_equal other.id, @view.reload.board_id
+    assert_equal 3, @view.position
+  end
 end
