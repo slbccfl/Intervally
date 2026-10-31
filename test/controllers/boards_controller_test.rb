@@ -115,4 +115,14 @@ class BoardsControllerTest < ActionDispatch::IntegrationTest
     assert_includes @response.body, "Unassigned"
     assert_includes @response.body, "Secondary View"
   end
+
+  test "board page omits edit and delete controls for the Unassigned view only" do
+    get board_path(@default)
+
+    assert_response :success
+    assert_select "form[action=?]", edit_view_path(views(:secondary)), count: 1
+    assert_select "form[action=?]", view_path(views(:secondary)), count: 1
+    assert_select "form[action=?]", edit_view_path(views(:unassigned)), count: 0
+    assert_select "form[action=?]", view_path(views(:unassigned)), count: 0
+  end
 end
