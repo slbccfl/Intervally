@@ -1,5 +1,5 @@
 <!-- A Task Card --> 
-<div id="<%= dom_id task %>" class="h-14 w-60 rounded border border-gray-300 <%= bg_color_for_priority(task.priority) %>">
+<div id="<%= dom_id task %>" draggable="true" data-controller="task-drag" data-task-drag-task-id-value="<%= task.id %>" data-action="dragstart->task-drag#dragStart" class="h-14 w-60 rounded border border-gray-300 <%= bg_color_for_priority(task.priority) %>">
   <!-- First row of the card -->
   <div class="flex h-4/10">
     <!-- Done Checkbox Cell -->

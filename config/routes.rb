@@ -6,6 +6,7 @@ Rails.application.routes.draw do
   resources :tasks do
     member do
       patch :toggle_status
+      patch :reassign_view
     end
   end
 

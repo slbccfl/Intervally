@@ -1,5 +1,5 @@
 class TasksController < ApplicationController
-  before_action :set_task, only: %i[ show edit update destroy toggle_status ]
+  before_action :set_task, only: %i[ show edit update destroy toggle_status reassign_view ]
 
   # GET /tasks or /tasks.json
   def index
@@ -92,6 +92,27 @@ class TasksController < ApplicationController
     else
       flash[:alert] = "Task could not be updated."
       redirect_to tasks_url, alert: "Task could not be updated."
+    end
+  end
+
+  # PATCH /tasks/1/reassign_view
+  def reassign_view
+    new_view = View.find(params.expect(:view_id))
+    old_view = @task.view
+
+    if @task.update(view: new_view)
+      flash.now[:notice] = "Task moved to #{new_view.name}."
+      respond_to do |format|
+        format.turbo_stream do
+          render turbo_stream: [
+            turbo_stream.replace("task-list-#{old_view.id}", partial: "tasks/task_list", locals: { tasks: old_view.tasks.sorted_by_urgency, dom_id: "task-list-#{old_view.id}" }),
+            turbo_stream.replace("task-list-#{new_view.id}", partial: "tasks/task_list", locals: { tasks: new_view.tasks.sorted_by_urgency, dom_id: "task-list-#{new_view.id}" }),
+            turbo_stream.update("flash-container") { render_to_string(partial: "application/flashes") }
+          ]
+        end
+      end
+    else
+      head :unprocessable_entity
     end
   end
 
