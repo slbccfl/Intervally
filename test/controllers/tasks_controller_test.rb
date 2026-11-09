@@ -153,4 +153,74 @@ class TasksControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_includes @response.body, "target=\"task-list-#{@task.view.id}\""
   end
+
+  test "reassign_view moves the task to the target view" do
+    target = views(:secondary)
+
+    patch reassign_view_task_url(@task),
+      params: { view_id: target.id },
+      headers: { "Accept" => "text/vnd.turbo-stream.html" }
+
+    assert_response :success
+    assert_equal target, @task.reload.view
+  end
+
+  test "reassign_view replaces both the old and the new task lists" do
+    old_view = @task.view
+    target = views(:secondary)
+
+    patch reassign_view_task_url(@task),
+      params: { view_id: target.id },
+      headers: { "Accept" => "text/vnd.turbo-stream.html" }
+
+    streams = @response.body.split("<turbo-stream")
+    old_stream = streams.find { |s| s.include?("target=\"task-list-#{old_view.id}\"") }
+    new_stream = streams.find { |s| s.include?("target=\"task-list-#{target.id}\"") }
+
+    assert old_stream, "expected a stream for the old view's task list"
+    assert new_stream, "expected a stream for the new view's task list"
+    assert_not_includes old_stream, "id=\"task_#{@task.id}\""
+    assert_includes new_stream, "id=\"task_#{@task.id}\""
+  end
+
+  test "reassign_view renders a flash notice naming the new view" do
+    target = views(:secondary)
+
+    patch reassign_view_task_url(@task),
+      params: { view_id: target.id },
+      headers: { "Accept" => "text/vnd.turbo-stream.html" }
+
+    assert_includes @response.body, "Task moved to #{target.name}."
+  end
+
+  test "reassign_view with an unknown view returns not found and leaves the task alone" do
+    original_view = @task.view
+
+    patch reassign_view_task_url(@task),
+      params: { view_id: 0 },
+      headers: { "Accept" => "text/vnd.turbo-stream.html" }
+
+    assert_response :not_found
+    assert_equal original_view, @task.reload.view
+  end
+
+  test "reassign_view to the task's current view is harmless" do
+    patch reassign_view_task_url(@task),
+      params: { view_id: @task.view_id },
+      headers: { "Accept" => "text/vnd.turbo-stream.html" }
+
+    assert_response :success
+    assert_equal views(:unassigned), @task.reload.view
+  end
+
+  test "reassign_view returns unprocessable entity when the task is invalid" do
+    @task.update_columns(title: nil)
+
+    patch reassign_view_task_url(@task),
+      params: { view_id: views(:secondary).id },
+      headers: { "Accept" => "text/vnd.turbo-stream.html" }
+
+    assert_response :unprocessable_entity
+    assert_equal views(:unassigned), @task.reload.view
+  end
 end
