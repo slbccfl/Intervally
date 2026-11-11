@@ -48,11 +48,18 @@ class TasksController < ApplicationController
       respond_to do |format|
         flash[:notice] = "Task updated."
         format.turbo_stream do
-          render turbo_stream: [
+          streams = [
             turbo_stream.replace("task-list", partial: "tasks/task_list", locals: { tasks: @task.view.tasks.sorted_by_urgency }),
             turbo_stream.replace("task-list-#{@task.view.id}", partial: "tasks/task_list", locals: { tasks: @task.view.tasks.sorted_by_urgency, dom_id: "task-list-#{@task.view.id}" }),
             turbo_stream.update("flash-container") { render_to_string(partial: "application/flashes") }
           ]
+
+          if @task.saved_change_to_view_id?
+            old_view = View.find(@task.view_id_before_last_save)
+            streams << turbo_stream.replace("task-list-#{old_view.id}", partial: "tasks/task_list", locals: { tasks: old_view.tasks.sorted_by_urgency, dom_id: "task-list-#{old_view.id}" })
+          end
+
+          render turbo_stream: streams
         end
         format.html { redirect_to @task, notice: "Task updated." }
       end

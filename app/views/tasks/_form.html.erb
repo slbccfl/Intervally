@@ -1,6 +1,5 @@
 
 <%= form_with(model: task, local: true, class: "flex flex-col gap-6 max-w-lg bg-white p-6 rounded-xl shadow-sm border border-gray-500") do |form| %>
-  <%= form.hidden_field :view_id %>
 
   <h2 class="text-2xl font-bold"><%=action_name.capitalize%> Task</h2>
 
@@ -10,6 +9,15 @@
   <div class="flex flex-col gap-1.5">
     <%= form.label :title, "Title", class: "text-sm font-semibold text-gray-700" %>
     <%= form.text_field :title, placeholder: "e.g., File Quarterly Taxes", class: "w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm p-2.5 border" %>
+  </div>
+
+  <!-- View Selection (grouped by Board) -->
+  <div class="flex flex-col gap-1.5">
+    <%= form.label :view_id, "View", class: "text-sm font-semibold text-gray-700" %>
+    <%= form.select :view_id,
+          Board.order(:position).includes(:views).map { |board| [ board.name, board.views.sort_by(&:position).map { |view| [ view.name, view.id ] } ] },
+          {},
+          class: "w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm p-2.5 border" %>
   </div>
 
   <!-- Second row of the form -->
@@ -42,6 +50,3 @@
   </div>
 
 <% end %>
-
-
-

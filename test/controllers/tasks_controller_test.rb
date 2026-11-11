@@ -145,6 +145,36 @@ class TasksControllerTest < ActionDispatch::IntegrationTest
     assert_includes @response.body, "target=\"task-list-#{@task.view.id}\""
   end
 
+  test "update that changes the view replaces both the old and the new task lists" do
+    old_view = @task.view
+    target = views(:secondary)
+
+    patch task_url(@task),
+      params: { task: { view_id: target.id } },
+      headers: { "Accept" => "text/vnd.turbo-stream.html" }
+
+    assert_response :success
+    assert_equal target, @task.reload.view
+
+    streams = @response.body.split("<turbo-stream")
+    old_stream = streams.find { |s| s.include?("target=\"task-list-#{old_view.id}\"") }
+    new_stream = streams.find { |s| s.include?("target=\"task-list-#{target.id}\"") }
+
+    assert old_stream, "expected a stream for the old view's task list"
+    assert new_stream, "expected a stream for the new view's task list"
+    assert_not_includes old_stream, "id=\"task_#{@task.id}\""
+    assert_includes new_stream, "id=\"task_#{@task.id}\""
+  end
+
+  test "update that does not change the view sends only one view task list stream" do
+    patch task_url(@task),
+      params: { task: { cycle: 7 } },
+      headers: { "Accept" => "text/vnd.turbo-stream.html" }
+
+    assert_response :success
+    assert_equal 1, @response.body.scan("target=\"task-list-").size
+  end
+
   test "should toggle task status with turbo stream and target the grid's task list" do
     @task.update!(completed: false, cycle: nil)
 
