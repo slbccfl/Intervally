@@ -33,7 +33,7 @@
     </div>
     <!-- Due in Days -->
     <div>
-      <%= task.due_on ? "(Due in #{(task.due_on - Date.today).to_i} days)" : nil %>
+      <%= task.due_on ? "(Due in #{(task.due_on - Date.current).to_i} days)" : nil %>
     </div>
 
   </div>
@@ -44,7 +44,7 @@
       <%= task.cycle.present? ? "Due every #{task.cycle} days" : "One-time task" %>
     </div>
     <!-- Due Ratio -->
-    <% due_ratio = task.cycle ? ((task.due_on - Date.today).to_f / task.cycle.to_i).round(2) : nil %>
+    <% due_ratio = task.cycle ? ((task.due_on - Date.current).to_f / task.cycle.to_i).round(2) : nil %>
     <div class="italic">
       <%= due_ratio ? "Due Ratio: #{number_with_precision(due_ratio, precision: 2)}" : "" %>
     </div>
