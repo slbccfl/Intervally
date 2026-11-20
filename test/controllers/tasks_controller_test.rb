@@ -54,9 +54,11 @@ class TasksControllerTest < ActionDispatch::IntegrationTest
 
   test "flash messages should allow pointer interactions" do
     post tasks_url, params: { task: { title: "Test", due_on: Date.today } }
-    follow_redirect!
+    follow_redirect! # "/" redirects to the Default Board
+    follow_redirect! # the Default Board page renders the flash
 
     assert_response :success
+    assert_includes @response.body, "Task created."
     assert_includes @response.body, "pointer-events-auto"
   end
 
@@ -65,7 +67,7 @@ class TasksControllerTest < ActionDispatch::IntegrationTest
       post tasks_url, params: { task: { cycle: @task.cycle, description: @task.description, due_on: @task.due_on, title: @task.title } }
     end
 
-    assert_redirected_to task_url(Task.last)
+    assert_redirected_to root_path
   end
 
   test "should create task with turbo stream and render a flash notice" do
@@ -91,7 +93,7 @@ class TasksControllerTest < ActionDispatch::IntegrationTest
 
   test "should update task" do
     patch task_url(@task), params: { task: { cycle: @task.cycle, description: @task.description, due_on: @task.due_on, title: @task.title } }
-    assert_redirected_to task_url(@task)
+    assert_redirected_to root_path
   end
 
   test "should reschedule recurring task instead of marking it complete" do
@@ -99,7 +101,7 @@ class TasksControllerTest < ActionDispatch::IntegrationTest
 
     patch toggle_status_task_url(@task), params: { completed: "true" }
 
-    assert_redirected_to tasks_url
+    assert_redirected_to root_path
     assert_not @task.reload.completed
     assert_equal Date.current + 5.days, @task.reload.due_on
   end
@@ -109,7 +111,7 @@ class TasksControllerTest < ActionDispatch::IntegrationTest
 
     patch toggle_status_task_url(@task)
 
-    assert_redirected_to tasks_url
+    assert_redirected_to root_path
     assert @task.reload.completed
   end
 
@@ -118,22 +120,9 @@ class TasksControllerTest < ActionDispatch::IntegrationTest
 
     patch toggle_status_task_url(@task), params: { completed: "false" }
 
-    assert_redirected_to tasks_url
+    assert_redirected_to root_path
     assert_not @task.reload.completed
     assert_equal Date.current, @task.reload.due_on
-  end
-
-  test "sorts tasks with completed last, then priority, then due ratio" do
-    Task.delete_all
-
-    lower_priority_task = Task.create!(title: "Lower priority", due_on: Date.current + 5.days, cycle: 2, priority: 1, view: views(:unassigned))
-    higher_priority_task = Task.create!(title: "Higher priority", due_on: Date.current + 1.day, cycle: 2, priority: 2, view: views(:unassigned))
-    completed_task = Task.create!(title: "Completed", due_on: Date.current, cycle: 2, priority: 1, completed: true, view: views(:unassigned))
-
-    # controller = TasksController.new
-    sorted_ids = [ lower_priority_task, higher_priority_task, completed_task ].sort_by(&:urgency_sort_key).pluck(:id)
-
-    assert_equal [ lower_priority_task.id, higher_priority_task.id, completed_task.id ], sorted_ids
   end
 
   test "should update task with turbo stream and target the grid's task list" do

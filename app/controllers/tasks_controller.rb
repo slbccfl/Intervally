@@ -34,7 +34,7 @@ class TasksController < ApplicationController
             turbo_stream.update("flash-container") { render_to_string(partial: "application/flashes") }
           ]
         end
-        format.html { redirect_to @task, notice: "Task created." }
+        format.html { redirect_to root_path, notice: "Task created." }
       else
         flash[:alert] = "Task could not be saved."
         format.html { render :new, status: :unprocessable_entity }
@@ -61,7 +61,7 @@ class TasksController < ApplicationController
 
           render turbo_stream: streams
         end
-        format.html { redirect_to @task, notice: "Task updated." }
+        format.html { redirect_to root_path, notice: "Task updated." }
       end
     else
       flash[:alert] = "Task could not be updated."
@@ -94,11 +94,11 @@ class TasksController < ApplicationController
             turbo_stream.update("flash-container") { render_to_string(partial: "application/flashes") }
           ]
         end
-        format.html { redirect_to tasks_url, notice: flash[:notice] }
+        format.html { redirect_to root_path, notice: flash[:notice] }
       end
     else
       flash[:alert] = "Task could not be updated."
-      redirect_to tasks_url, alert: "Task could not be updated."
+      redirect_to root_path, alert: "Task could not be updated."
     end
   end
 

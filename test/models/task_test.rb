@@ -42,4 +42,25 @@ class TaskTest < ActiveSupport::TestCase
     sorted = Task.sorted_by_urgency
     assert sorted.index(recurring) < sorted.index(one_time)
   end
+
+  test "sorts tasks with completed last, then priority, then due ratio" do
+    Task.delete_all
+
+    lower_priority_task = Task.create!(title: "Lower priority", due_on: Date.current + 5.days, cycle: 2, priority: 1, view: views(:unassigned))
+    higher_priority_task = Task.create!(title: "Higher priority", due_on: Date.current + 1.day, cycle: 2, priority: 2, view: views(:unassigned))
+    completed_task = Task.create!(title: "Completed", due_on: Date.current, cycle: 2, priority: 1, completed: true, view: views(:unassigned))
+
+    sorted_ids = [ lower_priority_task, higher_priority_task, completed_task ].sort_by(&:urgency_sort_key).pluck(:id)
+
+    assert_equal [ lower_priority_task.id, higher_priority_task.id, completed_task.id ], sorted_ids
+  end
+
+  test "equal priority and equal due ratio sort by earliest due date" do
+    # Both ratios are 1.0 (2 days / cycle 2, and 5 days / cycle 5), so only due_on separates them.
+    later = Task.create!(title: "later", due_on: Date.current + 5.days, cycle: 5, view: views(:unassigned), priority: 1)
+    earlier = Task.create!(title: "earlier", due_on: Date.current + 2.days, cycle: 2, view: views(:unassigned), priority: 1)
+
+    sorted = Task.sorted_by_urgency
+    assert sorted.index(earlier) < sorted.index(later)
+  end
 end
