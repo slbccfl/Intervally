@@ -3,7 +3,7 @@ Rails.application.routes.draw do
 
   root to: "boards#root"
 
-  resources :tasks do
+  resources :tasks, except: [ :index, :show ] do
     member do
       patch :toggle_status
       patch :reassign_view

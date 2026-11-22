@@ -1,15 +1,5 @@
 class TasksController < ApplicationController
-  before_action :set_task, only: %i[ show edit update destroy toggle_status reassign_view ]
-
-  # GET /tasks or /tasks.json
-  def index
-    @tasks = Task.sorted_by_urgency
-    @views = View.all  # ordered by position automatically — acts_as_list default scope
-  end
-
-  # GET /tasks/1 or /tasks/1.json
-  def show
-  end
+  before_action :set_task, only: %i[ edit update destroy toggle_status reassign_view ]
 
   # GET /tasks/new
   def new
