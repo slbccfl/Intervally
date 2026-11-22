@@ -10,7 +10,7 @@ class TasksController < ApplicationController
   def edit
   end
 
-  # POST /tasks or /tasks.json
+  # POST /tasks
   def create
     @task = Task.new(task_params.merge(view_id: task_params[:view_id].presence || default_view_id))
 
@@ -32,7 +32,7 @@ class TasksController < ApplicationController
     end
   end
 
-  # PATCH/PUT /tasks/1 or /tasks/1.json
+  # PATCH/PUT /tasks/1
   def update
     if @task.update(task_params)
       respond_to do |format|
@@ -113,7 +113,7 @@ class TasksController < ApplicationController
     end
   end
 
-  # DELETE /tasks/1 or /tasks/1.json
+  # DELETE /tasks/1
   def destroy
     @task.destroy!
 
@@ -133,14 +133,6 @@ class TasksController < ApplicationController
     def set_task
       @task = Task.find(params.expect(:id))
     end
-
-    # def task_sort_key(task)
-    #   days_until_due = (task.due_on - Date.current).to_i
-    #   cycle_value = task.cycle.present? && task.cycle.to_i.positive? ? task.cycle.to_f : Float::INFINITY
-    #   due_ratio = cycle_value == Float::INFINITY ? Float::INFINITY : ((days_until_due ? days_until_due : 0).to_f / cycle_value)
-
-    #   [task.completed ? 1 : 0, task.priority.to_i, due_ratio, task.due_on]
-    # end
 
     def default_view_id
       View.find_by!(name: View::UNASSIGNED_NAME).id
