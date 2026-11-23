@@ -1,11 +1,5 @@
 class ViewsController < ApplicationController
-  before_action :set_view, only: %i[ show edit update destroy move reassign_board]
-
-  # GET /views/1
-  def show
-    @tasks = @view.tasks.sorted_by_urgency
-    @views = View.order(:position)
-  end
+  before_action :set_view, only: %i[ edit update destroy move reassign_board]
 
   # GET /views/new
   def new

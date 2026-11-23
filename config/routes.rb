@@ -10,7 +10,7 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :views, except: [ :index ] do
+  resources :views, except: [ :index, :show ] do
     member do
       patch :move
       patch :reassign_board
