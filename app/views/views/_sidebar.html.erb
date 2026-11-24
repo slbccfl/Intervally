@@ -1,8 +1,0 @@
-<h2 class="text-3xl font-extrabold text-gray-900 tracking-tight mb-2">Views</h2>
-<div id="view-list" class="flex flex-col gap-1 w-48" data-controller="sortable" data-sortable-url-base-value="/views">
-  <% views.each do |view| %>
-    <%= render view, active_view: active_view %>
-  <% end %>
-</div>
-
-<%= link_to "New View", new_view_path(active_view_id: active_view&.id), data: { turbo_frame: "modal" }, class: "text-sm text-blue-600 hover:underline mt-2" %>

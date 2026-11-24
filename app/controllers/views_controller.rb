@@ -5,7 +5,6 @@ class ViewsController < ApplicationController
   def new
     @view = View.new
     @view.board_id = params[:board_id].presence || default_board_id
-    @active_view_id = params[:active_view_id].presence
   end
 
   # PATCH /views/1/move
@@ -25,7 +24,6 @@ class ViewsController < ApplicationController
 
   # GET /views/1/edit
   def edit
-    @active_view_id = params[:active_view_id].presence || @view.id
   end
 
   # POST /views
@@ -37,7 +35,6 @@ class ViewsController < ApplicationController
         flash[:notice] = "View created."
         format.turbo_stream do
           render turbo_stream: [
-            turbo_stream.append("view-list", partial: "views/view", locals: { view: @view, active_view: View.find_by(id: params[:active_view_id]) || View.find_by!(name: View::UNASSIGNED_NAME)  }),
             turbo_stream.append("view-grid", partial: "views/grid_column", locals: { view: @view }),
             turbo_stream.update("flash-container") { render_to_string(partial: "application/flashes") }
           ]
@@ -67,10 +64,7 @@ class ViewsController < ApplicationController
       respond_to do |format|
         flash[:notice] = "View updated."
         format.turbo_stream do
-          render turbo_stream: [
-            turbo_stream.replace(@view, partial: "views/view", locals: { view: @view, active_view: resolved_active_view }),
-            turbo_stream.update("flash-container") { render_to_string(partial: "application/flashes") }
-          ]
+          render turbo_stream: turbo_stream.update("flash-container") { render_to_string(partial: "application/flashes") }
         end
         format.html { redirect_to root_path, notice: "View updated." }
       end
@@ -97,12 +91,6 @@ class ViewsController < ApplicationController
 
     respond_to do |format|
       flash[:notice] = "View deleted."
-      format.turbo_stream do
-        render turbo_stream: [
-          turbo_stream.remove(@view),
-          turbo_stream.update("flash-container") { render_to_string(partial: "application/flashes") }
-        ]
-      end
       format.html { redirect_to root_path, notice: "View deleted." }
     end
   end
@@ -110,10 +98,6 @@ class ViewsController < ApplicationController
   private
     def set_view
       @view = View.find(params.expect(:id))
-    end
-
-    def resolved_active_view
-      View.find_by(id: params[:active_view_id]) || @view
     end
 
     def view_params
