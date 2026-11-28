@@ -16,7 +16,7 @@ Rails.application.routes.draw do
       patch :reassign_board
     end
   end
-  resources :labels
+
   resources :boards, only: %i[ show new create edit update destroy ] do
     member do
       patch :move
